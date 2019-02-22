@@ -32,32 +32,30 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
           drawer: Drawer(
               child: SafeArea(
-            child: ListView(
-              children: <Widget>[
-                Container(height: 20.0),
-                ListTile(title: Text("Change Width")),
-                Slider(
-                    activeColor: Colors.redAccent,
-                    inactiveColor: Colors.white,
-                    min: 0.0,
-                    max: 1.0,
-                    value: _widthRatio,
-                    onChanged: (double value) =>
-                        setState(() => _widthRatio = value)),
-                Divider(),
-                ListTile(
-                    title: Text("Show Labels"),
-                    trailing: Switch(
-                        value: _showLabels,
-                        onChanged: (bool value) =>
-                            setState(() => _showLabels = value))),
-                Divider(),
-              ],
-            ),
-          )),
+                  child: ListView(children: <Widget>[
+            Container(height: 20.0),
+            ListTile(title: Text("Change Width")),
+            Slider(
+                activeColor: Colors.redAccent,
+                inactiveColor: Colors.white,
+                min: 0.0,
+                max: 1.0,
+                value: _widthRatio,
+                onChanged: (double value) =>
+                    setState(() => _widthRatio = value)),
+            Divider(),
+            ListTile(
+                title: Text("Show Labels"),
+                trailing: Switch(
+                    value: _showLabels,
+                    onChanged: (bool value) =>
+                        setState(() => _showLabels = value))),
+            Divider(),
+          ]))),
           appBar: AppBar(title: Text("The Pocket Piano")),
           body: ListView.builder(
             itemCount: 7,
+            controller: ScrollController(initialScrollOffset: 1500.0),
             scrollDirection: Axis.horizontal,
             itemBuilder: (BuildContext context, int index) {
               final int i = index * 12;
