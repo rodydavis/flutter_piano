@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
           itemCount: 2,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) {
-            final int i = index + 1;
+            final int i = index * 12;
             return SafeArea(
               child: Container(
                 child: Stack(
@@ -23,13 +23,13 @@ class HomeScreen extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        PianoKey(accidental: false, midi: 24 * i),
-                        PianoKey(accidental: false, midi: 26 * i),
-                        PianoKey(accidental: false, midi: 28 * i),
-                        PianoKey(accidental: false, midi: 29 * i),
-                        PianoKey(accidental: false, midi: 31 * i),
-                        PianoKey(accidental: false, midi: 33 * i),
-                        PianoKey(accidental: false, midi: 35 * i),
+                        PianoKey(accidental: false, midi: 24 + i),
+                        PianoKey(accidental: false, midi: 26 + i),
+                        PianoKey(accidental: false, midi: 28 + i),
+                        PianoKey(accidental: false, midi: 29 + i),
+                        PianoKey(accidental: false, midi: 31 + i),
+                        PianoKey(accidental: false, midi: 33 + i),
+                        PianoKey(accidental: false, midi: 35 + i),
                       ],
                     ),
                     Positioned(
@@ -42,12 +42,12 @@ class HomeScreen extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Container(width: keyWidth * .5),
-                          PianoKey(accidental: true, midi: 25 * i),
-                          PianoKey(accidental: true, midi: 27 * i),
+                          PianoKey(accidental: true, midi: 25 + i),
+                          PianoKey(accidental: true, midi: 27 + i),
                           Container(width: keyWidth),
-                          PianoKey(accidental: true, midi: 30 * i),
-                          PianoKey(accidental: true, midi: 32 * i),
-                          PianoKey(accidental: true, midi: 34 * i),
+                          PianoKey(accidental: true, midi: 30 + i),
+                          PianoKey(accidental: true, midi: 32 + i),
+                          PianoKey(accidental: true, midi: 34 + i),
                           Container(width: keyWidth * .5),
                         ],
                       ),
