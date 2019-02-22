@@ -28,8 +28,6 @@ The key labels can also be turned off if you want a more minimal look.
 
 You can change the Piano.sf2 file to any sound font file for playing different instruments. 
 
-Total Dart Code Size: 5039 bytes
-
 ## Screenshots
 
 ### iOS
@@ -193,3 +191,4 @@ const BorderRadiusGeometry borderRadius = BorderRadius.only(
     bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0));
 
  ```
+ ### Total Dart Code Size: 5039 bytes
