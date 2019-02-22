@@ -16,3 +16,4 @@ Optionally the key width can be changed in the settings for adjusting for densit
 
 The key labels can also be turned off if you want a more minimal look.
 
+Total Dart Code Size: 5116 bytes
