@@ -1,64 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:scoped_model/scoped_model.dart';
 
-import '../../data/models/app_model.dart';
-import '../app/app_drawer.dart';
-import '../common/piano/keys.dart';
+import '../common/piano_key.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final AppModel _model = AppModel();
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
-  }
-
-  @override
-  dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    super.dispose();
-  }
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<AppModel>(
-      model: _model,
-      child: Scaffold(
-        drawer: AppDrawer(),
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("Flutter Piano"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.radio_button_checked,
-                color: Colors.red,
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Flutter Piano"),
+      ),
+      body: Container(
+        child: ListView.builder(
+          itemCount: 11,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (BuildContext context, int index) {
+            return SafeArea(
+              child: Container(
+                child: Stack(
+                  children: <Widget>[
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        PianoKey(accidental: false),
+                        PianoKey(accidental: false),
+                        PianoKey(accidental: false),
+                        PianoKey(accidental: false),
+                        PianoKey(accidental: false),
+                        PianoKey(accidental: false),
+                        PianoKey(accidental: false),
+                      ],
+                    ),
+                    Positioned(
+                      left: 0.0,
+                      right: 0.0,
+                      bottom: MediaQuery.of(context).size.height * .35,
+                      top: 0.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Container(width: keyWidth * .5),
+                          PianoKey(accidental: true),
+                          PianoKey(accidental: true),
+                          Container(width: keyWidth),
+                          PianoKey(accidental: true),
+                          PianoKey(accidental: true),
+                          PianoKey(accidental: true),
+                          Container(width: keyWidth * .5),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.play_arrow,
-              ),
-              onPressed: () {},
-            ),
-          ],
+            );
+          },
         ),
-        body: PianoKeys(),
       ),
     );
   }
