@@ -33,4 +33,4 @@ Total Dart Code Size: 5039 bytes
 ## Screenshots
 
 ![alt-text-1](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/ios_1.PNG) 
-![alt-text-2](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_1.jpg)
+![alt-text-2](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_3.jpg)
