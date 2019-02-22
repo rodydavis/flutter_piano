@@ -4,6 +4,12 @@ A Crossplatform Midi Piano built with Flutter.io.
 
 This application runs on both iOS and Android. This uses a custom CrossPlatform Midi Synth I built for a Flutter plugin that uses .SF2 sound font files located in the assets folder that can pointed to in the pubspec.yaml.
 
+```
+ assets:
+   - assets/sounds/Piano.SF2
+
+```
+
 ## Getting Started
 
 This application only runs in landscape mode, orientation is set in the AndroidManifest.xml and in the Runner.xcworspace settings.
