@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
                   Positioned(
                       left: 0.0,
                       right: 0.0,
-                      bottom: MediaQuery.of(context).size.height * .35,
+                      bottom: 100,
                       top: 0.0,
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
