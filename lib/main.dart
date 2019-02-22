@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
-
-import 'ui/common/piano_key.dart';
+import 'package:tonic/tonic.dart';
 
 void main() => runApp(MyApp());
 
@@ -43,53 +42,31 @@ class _MyAppState extends State<MyApp> {
                 return SafeArea(
                   child: Stack(children: <Widget>[
                     Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                      PianoKey(
-                          accidental: false, midi: 24 + i, keyWidth: _keyWidth),
-                      PianoKey(
-                          accidental: false, midi: 26 + i, keyWidth: _keyWidth),
-                      PianoKey(
-                          accidental: false, midi: 28 + i, keyWidth: _keyWidth),
-                      PianoKey(
-                          accidental: false, midi: 29 + i, keyWidth: _keyWidth),
-                      PianoKey(
-                          accidental: false, midi: 31 + i, keyWidth: _keyWidth),
-                      PianoKey(
-                          accidental: false, midi: 33 + i, keyWidth: _keyWidth),
-                      PianoKey(
-                          accidental: false, midi: 35 + i, keyWidth: _keyWidth),
+                      _buildKey(24 + i, false),
+                      _buildKey(26 + i, false),
+                      _buildKey(28 + i, false),
+                      _buildKey(29 + i, false),
+                      _buildKey(31 + i, false),
+                      _buildKey(33 + i, false),
+                      _buildKey(35 + i, false),
                     ]),
                     Positioned(
                         left: 0.0,
                         right: 0.0,
-                        bottom: 100,
+                        bottom: MediaQuery.of(context).size.height * .35,
                         top: 0.0,
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Container(width: 80 * .5),
-                              PianoKey(
-                                  accidental: true,
-                                  midi: 25 + i,
-                                  keyWidth: _keyWidth),
-                              PianoKey(
-                                  accidental: true,
-                                  midi: 27 + i,
-                                  keyWidth: _keyWidth),
-                              Container(width: 80),
-                              PianoKey(
-                                  accidental: true,
-                                  midi: 30 + i,
-                                  keyWidth: _keyWidth),
-                              PianoKey(
-                                  accidental: true,
-                                  midi: 32 + i,
-                                  keyWidth: _keyWidth),
-                              PianoKey(
-                                  accidental: true,
-                                  midi: 34 + i,
-                                  keyWidth: _keyWidth),
-                              Container(width: 80 * .5),
+                              Container(width: _keyWidth * .5),
+                              _buildKey(25 + i, true),
+                              _buildKey(27 + i, true),
+                              Container(width: _keyWidth),
+                              _buildKey(30 + i, true),
+                              _buildKey(32 + i, true),
+                              _buildKey(34 + i, true),
+                              Container(width: _keyWidth * .5),
                             ])),
                   ]),
                 );
@@ -98,4 +75,53 @@ class _MyAppState extends State<MyApp> {
           )),
     );
   }
+
+  Widget _buildKey(int midi, bool accidental) {
+    final pitchName = Pitch.fromMidiNumber(midi).toString();
+    final pianoKey = Stack(
+      children: <Widget>[
+        Semantics(
+            button: true,
+            hint: pitchName,
+            child: Material(
+                borderRadius: borderRadius,
+                color: accidental ? Colors.black : Colors.white,
+                child: InkWell(
+                  borderRadius: borderRadius,
+                  highlightColor: Colors.grey,
+                  onTap: () => FlutterMidi.playMidiNote(midi: midi),
+                ))),
+        Positioned(
+            left: 0.0,
+            right: 0.0,
+            bottom: 20.0,
+            child: Text(pitchName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: !accidental ? Colors.black : Colors.white))),
+      ],
+    );
+    if (accidental) {
+      return Container(
+        width: _keyWidth,
+        margin: EdgeInsets.symmetric(horizontal: 2.0),
+        padding: EdgeInsets.symmetric(horizontal: _keyWidth * .1),
+        child: Material(
+            elevation: 6.0,
+            borderRadius: borderRadius,
+            shadowColor: Color(0x802196F3),
+            child: pianoKey),
+      );
+    }
+    return Container(
+      width: _keyWidth,
+      child: pianoKey,
+      margin: EdgeInsets.symmetric(horizontal: 2.0),
+    );
+  }
 }
+
+const BorderRadiusGeometry borderRadius = BorderRadius.only(
+  bottomLeft: Radius.circular(10.0),
+  bottomRight: Radius.circular(10.0),
+);
