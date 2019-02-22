@@ -1,8 +1,8 @@
 # flutter_piano
 
-A Crossplatform Midi Piano built with Flutter.
+A Crossplatform Midi Piano built with Flutter.io.
 
-This application runs on both iOS and Android. This uses a custom CrossPlatform Midi Synth I built for Flutter a Flutter plugin that uses .SF2 sound font files located in the assets folder that can pointed to in the pubspec.yaml.
+This application runs on both iOS and Android. This uses a custom CrossPlatform Midi Synth I built for a Flutter plugin that uses .SF2 sound font files located in the assets folder that can pointed to in the pubspec.yaml.
 
 ## Getting Started
 
