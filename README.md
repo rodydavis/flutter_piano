@@ -22,9 +22,9 @@ This application only runs in landscape mode, orientation is set in the AndroidM
 
 ## Configuration
 
-Optionally the key width can be changed in the settings for adjusting key densitity.
+* Optionally the key width can be changed in the settings for adjusting key densitity.
 
-The key labels can also be turned off if you want a more minimal look.
+* The key labels can also be turned off if you want a more minimal look.
 
 ### IOS
 
