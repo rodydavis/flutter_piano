@@ -20,6 +20,7 @@ dependencies:
   flutter_midi: ^0.1.1+3
   flutter:
     sdk: flutter
+  tonic: ^0.2.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
