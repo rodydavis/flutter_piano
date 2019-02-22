@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:tonic/tonic.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 
-const double keyWidth = 80.0;
-
 class PianoKey extends StatefulWidget {
-  const PianoKey({
-    this.accidental = false,
-    this.midi = 60,
-  });
+  const PianoKey(
+      {this.accidental = false, this.midi = 60, this.keyWidth = 80.0});
 
   final bool accidental;
   final int midi;
+  final double keyWidth;
 
   @override
   _PianoKeyState createState() => _PianoKeyState();
@@ -36,7 +33,7 @@ class _PianoKeyState extends State<PianoKey> {
             child: Stack(
               children: <Widget>[
                 Container(
-                    width: keyWidth,
+                    width: widget.keyWidth,
                     margin: EdgeInsets.symmetric(horizontal: 2.0),
                     decoration: BoxDecoration(
                       color: widget.accidental
@@ -58,9 +55,9 @@ class _PianoKeyState extends State<PianoKey> {
             )));
     if (widget.accidental) {
       return Container(
-        width: keyWidth,
+        width: widget.keyWidth,
         margin: EdgeInsets.symmetric(horizontal: 2.0),
-        padding: EdgeInsets.symmetric(horizontal: keyWidth * .1),
+        padding: EdgeInsets.symmetric(horizontal: widget.keyWidth * .1),
         child: Material(
             elevation: _pressed ? 2.0 : 6.0,
             borderRadius: borderRadius,

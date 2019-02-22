@@ -38,14 +38,14 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Container(width: keyWidth * .5),
+                        Container(width: 80 * .5),
                         PianoKey(accidental: true, midi: 25 + i),
                         PianoKey(accidental: true, midi: 27 + i),
-                        Container(width: keyWidth),
+                        Container(width: 80),
                         PianoKey(accidental: true, midi: 30 + i),
                         PianoKey(accidental: true, midi: 32 + i),
                         PianoKey(accidental: true, midi: 34 + i),
-                        Container(width: keyWidth * .5),
+                        Container(width: 80 * .5),
                       ])),
             ]),
           );
