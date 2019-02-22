@@ -22,4 +22,4 @@ flutter:
   uses-material-design: true
 
   assets:
-   - assets/sounds/Piano.SF2
+   - assets/sounds/Piano.sf2
