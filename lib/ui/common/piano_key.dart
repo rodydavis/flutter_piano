@@ -19,8 +19,8 @@ class _PianoKeyState extends State<PianoKey> {
 
   @override
   Widget build(BuildContext context) {
-    final String pitchName = Pitch.fromMidiNumber(widget.midi).toString();
-    final Widget pianoKey = GestureDetector(
+    final pitchName = Pitch.fromMidiNumber(widget.midi).toString();
+    final pianoKey = GestureDetector(
         onTapDown: (_) => setState(() => _pressed = true),
         onTapCancel: () => setState(() => _pressed = false),
         onTap: () {
@@ -30,29 +30,16 @@ class _PianoKeyState extends State<PianoKey> {
         child: Semantics(
             button: true,
             hint: pitchName,
-            child: Stack(
-              children: <Widget>[
-                Container(
-                    width: widget.keyWidth,
-                    margin: EdgeInsets.symmetric(horizontal: 2.0),
-                    decoration: BoxDecoration(
+            child: Stack(children: <Widget>[
+              Container(
+                  width: widget.keyWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 2.0),
+                  decoration: BoxDecoration(
                       color: widget.accidental
                           ? (_pressed ? Colors.black26 : Colors.black)
                           : (_pressed ? Colors.grey : Colors.white),
-                      borderRadius: borderRadius,
-                    )),
-                Positioned(
-                    left: 0.0,
-                    right: 0.0,
-                    bottom: 20.0,
-                    child: Text(pitchName,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: !widget.accidental
-                                ? Colors.black
-                                : Colors.white))),
-              ],
-            )));
+                      borderRadius: borderRadius)),
+            ])));
     if (widget.accidental) {
       return Container(
         width: widget.keyWidth,
@@ -70,6 +57,4 @@ class _PianoKeyState extends State<PianoKey> {
 }
 
 const BorderRadiusGeometry borderRadius = BorderRadius.only(
-  bottomLeft: Radius.circular(10.0),
-  bottomRight: Radius.circular(10.0),
-);
+    bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0));
