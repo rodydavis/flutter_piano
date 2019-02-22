@@ -22,6 +22,7 @@ class _MyAppState extends State<MyApp> {
 
   double get keyWidth => 80 + (80 * _widthRatio);
   double _widthRatio = 0.0;
+  bool _showLabels = true;
 
   @override
   Widget build(BuildContext context) {
@@ -29,29 +30,32 @@ class _MyAppState extends State<MyApp> {
       title: 'The Pocket Piano',
       theme: ThemeData.dark(),
       home: Scaffold(
-          appBar: AppBar(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+          drawer: Drawer(
+              child: SafeArea(
+            child: ListView(
               children: <Widget>[
-                Text(
-                  "The Pocket Piano",
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30.0),
-                ),
+                Container(height: 20.0),
+                ListTile(title: Text("Change Width")),
                 Slider(
-                  activeColor: Colors.redAccent,
-                  inactiveColor: Colors.white,
-                  min: 0.0,
-                  max: 1.0,
-                  value: _widthRatio,
-                  onChanged: (double value) {
-                    setState(() {
-                      _widthRatio = value;
-                    });
-                  },
-                ),
+                    activeColor: Colors.redAccent,
+                    inactiveColor: Colors.white,
+                    min: 0.0,
+                    max: 1.0,
+                    value: _widthRatio,
+                    onChanged: (double value) =>
+                        setState(() => _widthRatio = value)),
+                Divider(),
+                ListTile(
+                    title: Text("Show Labels"),
+                    trailing: Switch(
+                        value: _showLabels,
+                        onChanged: (bool value) =>
+                            setState(() => _showLabels = value))),
+                Divider(),
               ],
             ),
-          ),
+          )),
+          appBar: AppBar(title: Text("The Pocket Piano")),
           body: ListView.builder(
             itemCount: 7,
             scrollDirection: Axis.horizontal,
@@ -113,33 +117,31 @@ class _MyAppState extends State<MyApp> {
             left: 0.0,
             right: 0.0,
             bottom: 20.0,
-            child: Text(pitchName,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: !accidental ? Colors.black : Colors.white))),
+            child: _showLabels
+                ? Text(pitchName,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: !accidental ? Colors.black : Colors.white))
+                : Container()),
       ],
     );
     if (accidental) {
       return Container(
-        width: keyWidth,
-        margin: EdgeInsets.symmetric(horizontal: 2.0),
-        padding: EdgeInsets.symmetric(horizontal: keyWidth * .1),
-        child: Material(
-            elevation: 6.0,
-            borderRadius: borderRadius,
-            shadowColor: Color(0x802196F3),
-            child: pianoKey),
-      );
+          width: keyWidth,
+          margin: EdgeInsets.symmetric(horizontal: 2.0),
+          padding: EdgeInsets.symmetric(horizontal: keyWidth * .1),
+          child: Material(
+              elevation: 6.0,
+              borderRadius: borderRadius,
+              shadowColor: Color(0x802196F3),
+              child: pianoKey));
     }
     return Container(
-      width: keyWidth,
-      child: pianoKey,
-      margin: EdgeInsets.symmetric(horizontal: 2.0),
-    );
+        width: keyWidth,
+        child: pianoKey,
+        margin: EdgeInsets.symmetric(horizontal: 2.0));
   }
 }
 
 const BorderRadiusGeometry borderRadius = BorderRadius.only(
-  bottomLeft: Radius.circular(10.0),
-  bottomRight: Radius.circular(10.0),
-);
+    bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0));

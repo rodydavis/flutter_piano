@@ -4,13 +4,15 @@ A Crossplatform Midi Piano built with Flutter.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This application only runs in landscape mode, orientation is set in the AndroidManifest.xml and in the Runner.xcworspace settings.
 
-A few resources to get you started if this is your first Flutter project:
+Make sure to turn your volume up and unmute the phone if possible, the application will try to unmute the device but it can be overriden.
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+The first section is the deepest notes so if you scroll to the right it will be much louder.
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## Configuration
+
+Optionally the key width can be changed in the settings for adjusting for densitity.
+
+The key labels can also be turned off if you want a more minimal look.
+
