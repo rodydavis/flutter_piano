@@ -20,7 +20,9 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  double _keyWidth = 80;
+  double get keyWidth => 80 + (80 * _widthRatio);
+  double _widthRatio = 0.0;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,50 +30,65 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData.dark(),
       home: Scaffold(
           appBar: AppBar(
-            title: Text("The Pocket Piano",
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30.0)),
-          ),
-          body: GestureDetector(
-            onScaleUpdate: (ScaleUpdateDetails value) =>
-                setState(() => _keyWidth = 80 + (80 * value.scale)),
-            child: ListView.builder(
-              itemCount: 7,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                final int i = index * 12;
-                return SafeArea(
-                  child: Stack(children: <Widget>[
-                    Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                      _buildKey(24 + i, false),
-                      _buildKey(26 + i, false),
-                      _buildKey(28 + i, false),
-                      _buildKey(29 + i, false),
-                      _buildKey(31 + i, false),
-                      _buildKey(33 + i, false),
-                      _buildKey(35 + i, false),
-                    ]),
-                    Positioned(
-                        left: 0.0,
-                        right: 0.0,
-                        bottom: MediaQuery.of(context).size.height * .35,
-                        top: 0.0,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Container(width: _keyWidth * .5),
-                              _buildKey(25 + i, true),
-                              _buildKey(27 + i, true),
-                              Container(width: _keyWidth),
-                              _buildKey(30 + i, true),
-                              _buildKey(32 + i, true),
-                              _buildKey(34 + i, true),
-                              Container(width: _keyWidth * .5),
-                            ])),
-                  ]),
-                );
-              },
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Text(
+                  "The Pocket Piano",
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30.0),
+                ),
+                Slider(
+                  activeColor: Colors.redAccent,
+                  inactiveColor: Colors.white,
+                  min: 0.0,
+                  max: 1.0,
+                  value: _widthRatio,
+                  onChanged: (double value) {
+                    setState(() {
+                      _widthRatio = value;
+                    });
+                  },
+                ),
+              ],
             ),
+          ),
+          body: ListView.builder(
+            itemCount: 7,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (BuildContext context, int index) {
+              final int i = index * 12;
+              return SafeArea(
+                child: Stack(children: <Widget>[
+                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    _buildKey(24 + i, false),
+                    _buildKey(26 + i, false),
+                    _buildKey(28 + i, false),
+                    _buildKey(29 + i, false),
+                    _buildKey(31 + i, false),
+                    _buildKey(33 + i, false),
+                    _buildKey(35 + i, false),
+                  ]),
+                  Positioned(
+                      left: 0.0,
+                      right: 0.0,
+                      bottom: MediaQuery.of(context).size.height * .35,
+                      top: 0.0,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Container(width: keyWidth * .5),
+                            _buildKey(25 + i, true),
+                            _buildKey(27 + i, true),
+                            Container(width: keyWidth),
+                            _buildKey(30 + i, true),
+                            _buildKey(32 + i, true),
+                            _buildKey(34 + i, true),
+                            Container(width: keyWidth * .5),
+                          ])),
+                ]),
+              );
+            },
           )),
     );
   }
@@ -89,7 +106,8 @@ class _MyAppState extends State<MyApp> {
                 child: InkWell(
                   borderRadius: borderRadius,
                   highlightColor: Colors.grey,
-                  onTap: () => FlutterMidi.playMidiNote(midi: midi),
+                  onTap: () {},
+                  onTapDown: (_) => FlutterMidi.playMidiNote(midi: midi),
                 ))),
         Positioned(
             left: 0.0,
@@ -103,9 +121,9 @@ class _MyAppState extends State<MyApp> {
     );
     if (accidental) {
       return Container(
-        width: _keyWidth,
+        width: keyWidth,
         margin: EdgeInsets.symmetric(horizontal: 2.0),
-        padding: EdgeInsets.symmetric(horizontal: _keyWidth * .1),
+        padding: EdgeInsets.symmetric(horizontal: keyWidth * .1),
         child: Material(
             elevation: 6.0,
             borderRadius: borderRadius,
@@ -114,7 +132,7 @@ class _MyAppState extends State<MyApp> {
       );
     }
     return Container(
-      width: _keyWidth,
+      width: keyWidth,
       child: pianoKey,
       margin: EdgeInsets.symmetric(horizontal: 2.0),
     );
