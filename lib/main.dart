@@ -14,8 +14,8 @@ class _MyAppState extends State<MyApp> {
   @override
   initState() {
     FlutterMidi.unmute();
-    rootBundle.load("assets/sounds/Piano.SF2").then((sf2) {
-      FlutterMidi.prepare(sf2: sf2, name: "Piano.SF2");
+    rootBundle.load("assets/sounds/Piano.sf2").then((sf2) {
+      FlutterMidi.prepare(sf2: sf2, name: "Piano.sf2");
     });
     super.initState();
   }
