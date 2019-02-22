@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Container(
         child: ListView.builder(
-          itemCount:11,
+          itemCount: 7,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) {
             final int i = index * 12;
