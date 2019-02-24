@@ -1,7 +1,7 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_piano/ui/common/piano_octave.dart';
-import 'package:flutter_piano/ui/common/piano_slider.dart';
+
+import 'piano_octave.dart';
+import 'piano_slider.dart';
 
 class PianoView extends StatefulWidget {
   const PianoView({
