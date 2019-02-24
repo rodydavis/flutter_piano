@@ -9,12 +9,14 @@ class PianoView extends StatefulWidget {
     this.keyWidth,
     @required this.labelsOnlyOctaves,
     this.disableScroll,
+    this.feedback,
   });
 
   final double keyWidth;
   final bool showLabels;
   final bool labelsOnlyOctaves;
   final bool disableScroll;
+  final bool feedback;
 
   @override
   _PianoViewState createState() => _PianoViewState();
@@ -64,6 +66,7 @@ class _PianoViewState extends State<PianoView> {
                 keyWidth: widget.keyWidth,
                 showLabels: widget.showLabels,
                 labelsOnlyOctaves: widget.labelsOnlyOctaves,
+                feedback: widget.feedback,
               );
             },
           ),

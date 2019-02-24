@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibrate/vibrate.dart';
 
 import '../common/piano_view.dart';
 
@@ -32,6 +33,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       FlutterMidi.prepare(sf2: sf2, name: "Piano.sf2");
     });
     _loadSettings();
+    Vibrate.canVibrate.then((vibrate) {
+      if (!_isDisposed)
+        setState(() {
+          canVibrate = vibrate;
+        });
+    });
   }
 
   void _loadSettings() async {
@@ -42,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         _showLabels = prefs.getBool("labels") ?? true;
         _labelsOnlyOctaves = prefs.getBool("octaves") ?? false;
         _disableScroll = prefs.getBool("scroll") ?? false;
+        shouldVibrate = prefs.getBool("vibrate") ?? true;
       });
   }
 
@@ -56,6 +64,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _showLabels = true;
   bool _labelsOnlyOctaves = true;
   bool _disableScroll = false;
+  bool canVibrate = false;
+  bool shouldVibrate = true;
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +117,20 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     if (!_isDisposed) setState(() => _disableScroll = value);
                     prefs.setBool("scroll", value);
                   })),
+          Divider(),
+          Container(
+            child: canVibrate
+                ? ListTile(
+                    title: Text("Key Feedback"),
+                    trailing: Switch(
+                        value: shouldVibrate,
+                        onChanged: (bool value) {
+                          if (!_isDisposed)
+                            setState(() => shouldVibrate = value);
+                          prefs.setBool("vibrate", value);
+                        }))
+                : null,
+          ),
         ]),
       )),
       appBar: AppBar(
@@ -122,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildKeys(BuildContext context) {
+    final _vibrate = shouldVibrate && canVibrate;
     if (MediaQuery.of(context).size.height > 600) {
       return Flex(
         direction: Axis.vertical,
@@ -132,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               showLabels: _showLabels,
               labelsOnlyOctaves: _labelsOnlyOctaves,
               disableScroll: _disableScroll,
+              feedback: _vibrate,
             ),
           ),
           Flexible(
@@ -140,6 +166,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               showLabels: _showLabels,
               labelsOnlyOctaves: _labelsOnlyOctaves,
               disableScroll: _disableScroll,
+              feedback: _vibrate,
             ),
           ),
         ],
@@ -150,6 +177,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       showLabels: _showLabels,
       labelsOnlyOctaves: _labelsOnlyOctaves,
       disableScroll: _disableScroll,
+      feedback: _vibrate,
     );
   }
 }

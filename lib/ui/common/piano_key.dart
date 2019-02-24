@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 import 'package:tonic/tonic.dart';
+import 'package:vibrate/vibrate.dart';
 
 class PianoKey extends StatelessWidget {
   const PianoKey({
@@ -9,6 +10,7 @@ class PianoKey extends StatelessWidget {
     this.accidental,
     @required this.showLabels,
     @required this.labelsOnlyOctaves,
+    this.feedback,
   });
 
   final bool accidental;
@@ -16,6 +18,7 @@ class PianoKey extends StatelessWidget {
   final int midi;
   final bool showLabels;
   final bool labelsOnlyOctaves;
+  final bool feedback;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,9 @@ class PianoKey extends StatelessWidget {
                 child: InkWell(
                   borderRadius: _borderRadius,
                   highlightColor: Colors.grey,
-                  onTap: () {},
+                  onTap: () {
+                    if (feedback) Vibrate.feedback(FeedbackType.light);
+                  },
                   onTapDown: (_) => FlutterMidi.playMidiNote(midi: midi),
                 ))),
         Positioned(
