@@ -47,9 +47,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _loadSoundFont();
-    }
+    print("State: $state");
+    _loadSoundFont();
   }
 
   double get keyWidth => 40 + (80 * (_widthRatio ?? 0.5));
