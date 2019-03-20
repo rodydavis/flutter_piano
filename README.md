@@ -2,15 +2,16 @@
 
 A Crossplatform Midi Piano built with Flutter.io.
 
-* This application runs on both iOS and Android. 
-* This runs a custom crossplatform midi synth I built for a Flutter plugin `flutter_midi` that uses .SF2 sound font files. 
+- This application runs on both iOS and Android.
+- This runs a custom crossplatform midi synth I built for a Flutter plugin `flutter_midi` that uses .SF2 sound font files.
 
 ```
  assets:
    - assets/sounds/Piano.SF2
 
 ```
-* There are Semantics included for the visually impaired. All keys show up as buttons and have the pitch name of the midi note not just the number.
+
+- There are Semantics included for the visually impaired. All keys show up as buttons and have the pitch name of the midi note not just the number.
 
 ## Getting Started
 
@@ -23,9 +24,9 @@ This application only runs in landscape mode, orientation is set in the AndroidM
 
 ## Configuration
 
-* Optionally the key width can be changed in the settings for adjusting key densitity.
+- Optionally the key width can be changed in the settings for adjusting key densitity.
 
-* The key labels can also be turned off if you want a more minimal look.
+- The key labels can also be turned off if you want a more minimal look.
 
 ### IOS
 
@@ -35,7 +36,7 @@ This application only runs in landscape mode, orientation is set in the AndroidM
 
 ![alt-text-2](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_1.jpg)
 
-* You can change the Piano.sf2 file to any sound font file for playing different instruments. 
+- You can change the Piano.sf2 file to any sound font file for playing different instruments.
 
 ## Screenshots
 
@@ -49,11 +50,10 @@ This application only runs in landscape mode, orientation is set in the AndroidM
 ![alt-text-2](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_3.jpg)
 ![alt-text-2](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_2.jpg)
 
-
 ## Code
 
- ``` dart
- import 'package:flutter/material.dart';
+```dart
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 import 'package:tonic/tonic.dart';
@@ -69,8 +69,8 @@ class _MyAppState extends State<MyApp> {
   @override
   initState() {
     FlutterMidi.unmute();
-    rootBundle.load("assets/sounds/Piano.SF2").then((sf2) {
-      FlutterMidi.prepare(sf2: sf2, name: "Piano.SF2");
+    rootBundle.load("assets/sounds/Piano.sf2").then((sf2) {
+      FlutterMidi.prepare(sf2: sf2, name: "Piano.sf2");
     });
     super.initState();
   }
@@ -80,7 +80,7 @@ class _MyAppState extends State<MyApp> {
   bool _showLabels = true;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return MaterialApp(
       title: 'The Pocket Piano',
       theme: ThemeData.dark(),
@@ -88,31 +88,29 @@ class _MyAppState extends State<MyApp> {
           drawer: Drawer(
               child: SafeArea(
                   child: ListView(children: <Widget>[
-            Container(height: 20.0),
+            SizedBox(height: 20),
             ListTile(title: Text("Change Width")),
             Slider(
                 activeColor: Colors.redAccent,
                 inactiveColor: Colors.white,
-                min: 0.0,
-                max: 1.0,
+                min: 0,
+                max: 1,
                 value: _widthRatio,
-                onChanged: (double value) =>
-                    setState(() => _widthRatio = value)),
+                onChanged: (value) => setState(() => _widthRatio = value)),
             Divider(),
             ListTile(
                 title: Text("Show Labels"),
                 trailing: Switch(
                     value: _showLabels,
-                    onChanged: (bool value) =>
-                        setState(() => _showLabels = value))),
+                    onChanged: (value) => setState(() => _showLabels = value))),
             Divider(),
           ]))),
           appBar: AppBar(title: Text("The Pocket Piano")),
           body: ListView.builder(
             itemCount: 7,
-            controller: ScrollController(initialScrollOffset: 1500.0),
+            controller: ScrollController(initialScrollOffset: 1500),
             scrollDirection: Axis.horizontal,
-            itemBuilder: (BuildContext context, int index) {
+            itemBuilder: (context, index) {
               final int i = index * 12;
               return SafeArea(
                 child: Stack(children: <Widget>[
@@ -126,22 +124,22 @@ class _MyAppState extends State<MyApp> {
                     _buildKey(35 + i, false),
                   ]),
                   Positioned(
-                      left: 0.0,
-                      right: 0.0,
+                      left: 0,
+                      right: 0,
                       bottom: 100,
-                      top: 0.0,
+                      top: 0,
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Container(width: keyWidth * .5),
+                            Container(width: keyWidth / 2),
                             _buildKey(25 + i, true),
                             _buildKey(27 + i, true),
                             Container(width: keyWidth),
                             _buildKey(30 + i, true),
                             _buildKey(32 + i, true),
                             _buildKey(34 + i, true),
-                            Container(width: keyWidth * .5),
+                            Container(width: keyWidth / 2),
                           ])),
                 ]),
               );
@@ -167,9 +165,9 @@ class _MyAppState extends State<MyApp> {
                   onTapDown: (_) => FlutterMidi.playMidiNote(midi: midi),
                 ))),
         Positioned(
-            left: 0.0,
-            right: 0.0,
-            bottom: 20.0,
+            left: 0,
+            right: 0,
+            bottom: 20,
             child: _showLabels
                 ? Text(pitchName,
                     textAlign: TextAlign.center,
@@ -181,10 +179,10 @@ class _MyAppState extends State<MyApp> {
     if (accidental) {
       return Container(
           width: keyWidth,
-          margin: EdgeInsets.symmetric(horizontal: 2.0),
+          margin: EdgeInsets.symmetric(horizontal: 2),
           padding: EdgeInsets.symmetric(horizontal: keyWidth * .1),
           child: Material(
-              elevation: 6.0,
+              elevation: 6,
               borderRadius: borderRadius,
               shadowColor: Color(0x802196F3),
               child: pianoKey));
@@ -192,12 +190,13 @@ class _MyAppState extends State<MyApp> {
     return Container(
         width: keyWidth,
         child: pianoKey,
-        margin: EdgeInsets.symmetric(horizontal: 2.0));
+        margin: EdgeInsets.symmetric(horizontal: 2));
   }
 }
 
 const BorderRadiusGeometry borderRadius = BorderRadius.only(
-    bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0));
+    bottomLeft: Radius.circular(9), bottomRight: Radius.circular(9));
 
- ```
- ### Total Dart Code Size: 5039 bytes
+```
+
+### Total Dart Code Size: 4918 bytes
