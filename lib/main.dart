@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
   bool _showLabels = true;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return MaterialApp(
       title: 'The Pocket Piano',
       theme: ThemeData.dark(),
@@ -33,31 +33,29 @@ class _MyAppState extends State<MyApp> {
           drawer: Drawer(
               child: SafeArea(
                   child: ListView(children: <Widget>[
-            Container(height: 20.0),
+            SizedBox(height: 20),
             ListTile(title: Text("Change Width")),
             Slider(
                 activeColor: Colors.redAccent,
                 inactiveColor: Colors.white,
-                min: 0.0,
-                max: 1.0,
+                min: 0,
+                max: 1,
                 value: _widthRatio,
-                onChanged: (double value) =>
-                    setState(() => _widthRatio = value)),
+                onChanged: (value) => setState(() => _widthRatio = value)),
             Divider(),
             ListTile(
                 title: Text("Show Labels"),
                 trailing: Switch(
                     value: _showLabels,
-                    onChanged: (bool value) =>
-                        setState(() => _showLabels = value))),
+                    onChanged: (value) => setState(() => _showLabels = value))),
             Divider(),
           ]))),
           appBar: AppBar(title: Text("The Pocket Piano")),
           body: ListView.builder(
             itemCount: 7,
-            controller: ScrollController(initialScrollOffset: 1500.0),
+            controller: ScrollController(initialScrollOffset: 1500),
             scrollDirection: Axis.horizontal,
-            itemBuilder: (BuildContext context, int index) {
+            itemBuilder: (context, index) {
               final int i = index * 12;
               return SafeArea(
                 child: Stack(children: <Widget>[
@@ -71,22 +69,22 @@ class _MyAppState extends State<MyApp> {
                     _buildKey(35 + i, false),
                   ]),
                   Positioned(
-                      left: 0.0,
-                      right: 0.0,
+                      left: 0,
+                      right: 0,
                       bottom: 100,
-                      top: 0.0,
+                      top: 0,
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Container(width: keyWidth * .5),
+                            Container(width: keyWidth / 2),
                             _buildKey(25 + i, true),
                             _buildKey(27 + i, true),
                             Container(width: keyWidth),
                             _buildKey(30 + i, true),
                             _buildKey(32 + i, true),
                             _buildKey(34 + i, true),
-                            Container(width: keyWidth * .5),
+                            Container(width: keyWidth / 2),
                           ])),
                 ]),
               );
@@ -112,9 +110,9 @@ class _MyAppState extends State<MyApp> {
                   onTapDown: (_) => FlutterMidi.playMidiNote(midi: midi),
                 ))),
         Positioned(
-            left: 0.0,
-            right: 0.0,
-            bottom: 20.0,
+            left: 0,
+            right: 0,
+            bottom: 20,
             child: _showLabels
                 ? Text(pitchName,
                     textAlign: TextAlign.center,
@@ -126,10 +124,10 @@ class _MyAppState extends State<MyApp> {
     if (accidental) {
       return Container(
           width: keyWidth,
-          margin: EdgeInsets.symmetric(horizontal: 2.0),
+          margin: EdgeInsets.symmetric(horizontal: 2),
           padding: EdgeInsets.symmetric(horizontal: keyWidth * .1),
           child: Material(
-              elevation: 6.0,
+              elevation: 6,
               borderRadius: borderRadius,
               shadowColor: Color(0x802196F3),
               child: pianoKey));
@@ -137,9 +135,9 @@ class _MyAppState extends State<MyApp> {
     return Container(
         width: keyWidth,
         child: pianoKey,
-        margin: EdgeInsets.symmetric(horizontal: 2.0));
+        margin: EdgeInsets.symmetric(horizontal: 2));
   }
 }
 
 const BorderRadiusGeometry borderRadius = BorderRadius.only(
-    bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0));
+    bottomLeft: Radius.circular(9), bottomRight: Radius.circular(9));
