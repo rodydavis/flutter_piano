@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:vibrate/vibrate.dart';
+import 'package:app_review/app_review.dart';
 
 import '../common/piano_view.dart';
 
@@ -19,6 +22,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   initState() {
     _loadSoundFont();
+    if (Platform.isIOS) {
+      AppReview.requestReview.then((onValue) {
+        print(onValue);
+      });
+    }
     super.initState();
   }
 
