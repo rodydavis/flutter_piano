@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:vibrate/vibrate.dart';
 
 import '../common/piano_view.dart';
@@ -12,7 +12,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  SharedPreferences prefs;
+  final LocalStorage _storage = new LocalStorage('app_settings');
+
   bool _isDisposed = false;
 
   @override
@@ -42,14 +43,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   void _loadSettings() async {
-    prefs = await SharedPreferences.getInstance();
+    await _storage.ready;
     if (!_isDisposed)
       setState(() {
-        _widthRatio = prefs.getDouble("ratio") ?? 0.5;
-        _showLabels = prefs.getBool("labels") ?? true;
-        _labelsOnlyOctaves = prefs.getBool("octaves") ?? false;
-        _disableScroll = prefs.getBool("scroll") ?? false;
-        shouldVibrate = prefs.getBool("vibrate") ?? true;
+        _widthRatio = _storage.getItem("ratio") ?? 0.5;
+        _showLabels = _storage.getItem("labels") ?? true;
+        _labelsOnlyOctaves = _storage.getItem("octaves") ?? false;
+        _disableScroll = _storage.getItem("scroll") ?? false;
+        shouldVibrate = _storage.getItem("vibrate") ?? true;
       });
   }
 
@@ -84,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               value: _widthRatio ?? 0.5,
               onChanged: (double value) {
                 if (!_isDisposed) setState(() => _widthRatio = value);
-                prefs.setDouble("ratio", value);
+                _storage.setItem("ratio", value);
               }),
           Divider(),
           ListTile(
@@ -93,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   value: _showLabels,
                   onChanged: (bool value) {
                     if (!_isDisposed) setState(() => _showLabels = value);
-                    prefs.setBool("labels", value);
+                    _storage.setItem("labels", value);
                   })),
           Container(
             child: _showLabels
@@ -104,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         onChanged: (bool value) {
                           if (!_isDisposed)
                             setState(() => _labelsOnlyOctaves = value);
-                          prefs.setBool("octaves", value);
+                          _storage.setItem("octaves", value);
                         }))
                 : null,
           ),
@@ -115,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   value: _disableScroll,
                   onChanged: (bool value) {
                     if (!_isDisposed) setState(() => _disableScroll = value);
-                    prefs.setBool("scroll", value);
+                    _storage.setItem("scroll", value);
                   })),
           Divider(),
           Container(
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         onChanged: (bool value) {
                           if (!_isDisposed)
                             setState(() => shouldVibrate = value);
-                          prefs.setBool("vibrate", value);
+                          _storage.setItem("vibrate", value);
                         }))
                 : null,
           ),

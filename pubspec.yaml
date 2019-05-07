@@ -11,14 +11,18 @@ dependencies:
   flutter:
     sdk: flutter
   tonic: ^0.2.3
-  flutter_midi: ^0.1.1+3
-  shared_preferences: ^0.5.1+1
   cupertino_icons: ^0.1.2
   vibrate: ^0.0.4
+  localstorage: ^1.3.0
+  flutter_midi: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+dependency_overrides:
+  localstorage:
+    git: https://github.com/AppleEducate/flutter_localstorage
 
 flutter:
   uses-material-design: true
