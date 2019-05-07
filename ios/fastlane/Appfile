@@ -1,0 +1,8 @@
+app_identifier("com.appleeducate.pocketpiano") # The bundle identifier of your app
+apple_id("irody@icloud.com") # Your Apple email address
+
+itc_team_id("118550575") # App Store Connect Team ID
+team_id("9FK3425VTA") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
