@@ -2,7 +2,7 @@ name: flutter_piano
 description: A Crossplatform Midi Piano built with Flutter.
 author: Rody Davis Jr <rody.davis.jr@gmail.com>
 homepage: https://github.com/AppleEducate/flutter_piano
-version: 1.0.0+5
+version: 1.0.1
 
 environment:
   sdk: ">=2.0.0 <3.0.0"
