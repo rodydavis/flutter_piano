@@ -7,11 +7,22 @@ import 'ui/home/screen.dart';
 
 void main() {
   _setTargetPlatformForDesktop();
-  runApp(MaterialApp(
-    title: 'The Pocket Piano',
-    theme: ThemeData.dark(),
-    home: HomeScreen(),
-  ));
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'The Pocket Piano',
+      theme: ThemeData.dark(),
+      home: HomeScreen(),
+    );
+  }
 }
 
 /// If the current platform is desktop, override the default platform to
