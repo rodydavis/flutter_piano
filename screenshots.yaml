@@ -19,8 +19,9 @@ locales:
 devices:
   ios:
     - iPhone XS Max
-#    - iPhone 7 Plus
+    - iPhone 8
     - iPad Pro (12.9-inch) (3rd generation)
+    - iPad Pro (12.9-inch) (2nd generation)
   android:
     - Nexus 6P
 
