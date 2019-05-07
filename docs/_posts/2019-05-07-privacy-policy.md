@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Privacy Policy"
+title:  "The Pocket Piano - Privacy Policy"
 date:   2019-05-07 14:56:40 -0400
 categories: hosting
 ---
