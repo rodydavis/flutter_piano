@@ -7,6 +7,9 @@ A Crossplatform Midi Piano built with Flutter.io.
 * This application runs on both iOS and Android. 
 * This runs a custom crossplatform midi synth I built for a Flutter plugin `flutter_midi` that uses .SF2 sound font files. 
 
+The Pocket Piano by Rody Davis
+[App Store](https://itunes.apple.com/us/app/the-pocket-piano/id1453992672?mt=8)
+
 ```
  assets:
    - assets/sounds/Piano.SF2
