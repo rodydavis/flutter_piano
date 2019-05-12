@@ -9,7 +9,7 @@ A Crossplatform Midi Piano built with Flutter.io.
 
 The Pocket Piano by Rody Davis
 [App Store](https://itunes.apple.com/us/app/the-pocket-piano/id1453992672?mt=8)
-[Google Play](https://play.google.com/store/apps/details?id=com.appleeducate.flutter_piano)
+ | [Google Play](https://play.google.com/store/apps/details?id=com.appleeducate.flutter_piano)
 
 ```
  assets:
