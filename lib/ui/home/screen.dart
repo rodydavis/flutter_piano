@@ -1,13 +1,14 @@
-import 'dart:io';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:vibrate/vibrate.dart';
-import 'package:app_review/app_review.dart';
 
+import '../../utils/index.dart';
 import '../common/piano_view.dart';
+import '../settings/screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -22,11 +23,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   initState() {
     _loadSoundFont();
-    if (Platform.isIOS) {
-      AppReview.requestReview.then((onValue) {
-        print(onValue);
-      });
-    }
+    Future.delayed(Duration(seconds: 60)).then((_) => requestReview());
     super.initState();
   }
 
@@ -84,6 +81,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           child: SafeArea(
         child: ListView(children: <Widget>[
           Container(height: 20.0),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text("Settings"),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => SettingsScreen()));
+            },
+          ),
+          Divider(),
           ListTile(title: Text("Change Width")),
           Slider(
               activeColor: Colors.redAccent,

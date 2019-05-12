@@ -34,10 +34,17 @@ class PianoKey extends StatelessWidget {
                 child: InkWell(
                   borderRadius: _borderRadius,
                   highlightColor: Colors.grey,
-                  onTap: () {
-                    if (feedback) Vibrate.feedback(FeedbackType.light);
+                  onTap: () {} ,
+                  onTapDown: (_) {
+                  
+                    FlutterMidi.playMidiNote(midi: midi);
+                      if (feedback) {
+                      Vibrate.feedback(FeedbackType.light);
+                    }
                   },
-                  onTapDown: (_) => FlutterMidi.playMidiNote(midi: midi),
+                  onTapCancel: () {
+                    FlutterMidi.stopMidiNote(midi: midi);
+                  },
                 ))),
         Positioned(
             left: 0.0,
