@@ -1,10 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
   <meta charset="UTF-8">
-  <title></title>
-  <script defer src="main.dart.js" type="application/javascript"></script>
+  <title>The Pocket Piano</title>
+  <style>
+    button {
+      visibility: hidden;
+    }
+  </style>
 </head>
+
 <body>
+  <script src="main.dart.js" type="application/javascript"></script>
+  <script src='https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js'></script>
+  <script src='https://surikov.github.io/webaudiofontdata/sound/0090_JCLive_sf2_file.js'></script>
+  <script>
+    var AudioContextFunc = window.AudioContext || window.webkitAudioContext;
+    var audioContext;
+    var player;
+    function setupAudio() {
+      audioContext = new AudioContextFunc();
+      player = new WebAudioFontPlayer();
+      player.loader.decodeAfterLoading(audioContext, '_tone_0090_JCLive_sf2_file');
+      console.log('Playback resumed successfully');
+    }
+    function playKey(pitch) {
+      setupAudio()
+      console.log(pitch);
+      player.queueWaveTable(audioContext, audioContext.destination, _tone_0090_JCLive_sf2_file, 0, pitch, 0.75);
+    }
+  </script>
+  <button id="midiPlay1" onclick="playKey(1)"></button>
+  <button id="midiPlay2" onclick="playKey(2)"></button>
+  <button id="midiPlay3" onclick="playKey(3)"></button>
+  <button id="midiPlay4" onclick="playKey(4)"></button>
+  <button id="midiPlay5" onclick="playKey(5)"></button>
+  <button id="midiPlay6" onclick="playKey(6)"></button>
+  <button id="midiPlay7" onclick="playKey(7)"></button>
+  <button id="midiPlay8" onclick="playKey(8)"></button>
+  <button id="midiPlay9" onclick="playKey(9)"></button>
+  <button id="midiPlay10" onclick="playKey(10)"></button>
+  <button id="midiPlay11" onclick="playKey(11)"></button>
+  <button id="midiPlay12" onclick="playKey(12)"></button>
+  <button id="midiPlay13" onclick="playKey(13)"></button>
+  <button id="midiPlay14" onclick="playKey(14)"></button>
+  <button id="midiPlay15" onclick="playKey(15)"></button>
+  <button id="midiPlay16" onclick="playKey(16)"></button>
+  <button id="midiPlay17" onclick="playKey(17)"></button>
+  <button id="midiPlay18" onclick="playKey(18)"></button>
+  <button id="midiPlay19" onclick="playKey(19)"></button>
+  <button id="midiPlay20" onclick="playKey(20)"></button>
+  <button id="midiPlay21" onclick="playKey(21)"></button>
+  <button id="midiPlay22" onclick="playKey(22)"></button>
+  <button id="midiPlay23" onclick="playKey(23)"></button>
+  <button id="midiPlay24" onclick="playKey(24)"></button>
+  <button id="midiPlay25" onclick="playKey(25)"></button>
+  <button id="midiPlay26" onclick="playKey(26)"></button>
+  <button id="midiPlay27" onclick="playKey(27)"></button>
+  <button id="midiPlay28" onclick="playKey(28)"></button>
+  <button id="midiPlay29" onclick="playKey(29)"></button>
+  <button id="midiPlay30" onclick="playKey(30)"></button>
+  <button id="midiPlay31" onclick="playKey(31)"></button>
+  <button id="midiPlay32" onclick="playKey(32)"></button>
+  <button id="midiPlay33" onclick="playKey(33)"></button>
+  <button id="midiPlay34" onclick="playKey(34)"></button>
+  <button id="midiPlay35" onclick="playKey(35)"></button>
+  <button id="midiPlay36" onclick="playKey(36)"></button>
+  <button id="midiPlay37" onclick="playKey(37)"></button>
+  <button id="midiPlay38" onclick="playKey(38)"></button>
+  <button id="midiPlay39" onclick="playKey(39)"></button>
+  <button id="midiPlay40" onclick="playKey(40)"></button>
+  <button id="midiPlay41" onclick="playKey(41)"></button>
+  <button id="midiPlay42" onclick="playKey(42)"></button>
+  <button id="midiPlay43" onclick="playKey(43)"></button>
+  <button id="midiPlay44" onclick="playKey(44)"></button>
+  <button id="midiPlay45" onclick="playKey(45)"></button>
+  <button id="midiPlay46" onclick="playKey(46)"></button>
+  <button id="midiPlay47" onclick="playKey(47)"></button>
+  <button id="midiPlay48" onclick="playKey(48)"></button>
+  <button id="midiPlay49" onclick="playKey(49)"></button>
+  <button id="midiPlay50" onclick="playKey(50)"></button>
+  <button id="midiPlay51" onclick="playKey(51)"></button>
+  <button id="midiPlay52" onclick="playKey(52)"></button>
+  <button id="midiPlay53" onclick="playKey(53)"></button>
+  <button id="midiPlay54" onclick="playKey(54)"></button>
+  <button id="midiPlay55" onclick="playKey(55)"></button>
+  <button id="midiPlay56" onclick="playKey(56)"></button>
+  <button id="midiPlay57" onclick="playKey(57)"></button>
+  <button id="midiPlay58" onclick="playKey(58)"></button>
+  <button id="midiPlay59" onclick="playKey(59)"></button>
+  <button id="midiPlay60" onclick="playKey(60)"></button>
+  <button id="midiPlay61" onclick="playKey(61)"></button>
+  <button id="midiPlay62" onclick="playKey(62)"></button>
+  <button id="midiPlay63" onclick="playKey(63)"></button>
+  <button id="midiPlay64" onclick="playKey(64)"></button>
+  <button id="midiPlay65" onclick="playKey(65)"></button>
+  <button id="midiPlay66" onclick="playKey(66)"></button>
+  <button id="midiPlay67" onclick="playKey(67)"></button>
+  <button id="midiPlay68" onclick="playKey(68)"></button>
+  <button id="midiPlay69" onclick="playKey(69)"></button>
+  <button id="midiPlay70" onclick="playKey(70)"></button>
+  <button id="midiPlay71" onclick="playKey(71)"></button>
+  <button id="midiPlay72" onclick="playKey(72)"></button>
+  <button id="midiPlay73" onclick="playKey(73)"></button>
+  <button id="midiPlay74" onclick="playKey(74)"></button>
+  <button id="midiPlay75" onclick="playKey(75)"></button>
+  <button id="midiPlay76" onclick="playKey(76)"></button>
+  <button id="midiPlay77" onclick="playKey(77)"></button>
+  <button id="midiPlay78" onclick="playKey(78)"></button>
+  <button id="midiPlay79" onclick="playKey(79)"></button>
+  <button id="midiPlay80" onclick="playKey(80)"></button>
+  <button id="midiPlay81" onclick="playKey(81)"></button>
+  <button id="midiPlay82" onclick="playKey(82)"></button>
+  <button id="midiPlay83" onclick="playKey(83)"></button>
+  <button id="midiPlay84" onclick="playKey(84)"></button>
+  <button id="midiPlay85" onclick="playKey(85)"></button>
+  <button id="midiPlay86" onclick="playKey(86)"></button>
+  <button id="midiPlay87" onclick="playKey(87)"></button>
+  <button id="midiPlay88" onclick="playKey(88)"></button>
+  <button id="midiPlay89" onclick="playKey(89)"></button>
+  <button id="midiPlay90" onclick="playKey(90)"></button>
+  <button id="midiPlay91" onclick="playKey(91)"></button>
+  <button id="midiPlay92" onclick="playKey(92)"></button>
+  <button id="midiPlay93" onclick="playKey(93)"></button>
+  <button id="midiPlay94" onclick="playKey(94)"></button>
+  <button id="midiPlay95" onclick="playKey(95)"></button>
+  <button id="midiPlay96" onclick="playKey(96)"></button>
+  <button id="midiPlay97" onclick="playKey(97)"></button>
+  <button id="midiPlay98" onclick="playKey(98)"></button>
+  <button id="midiPlay99" onclick="playKey(99)"></button>
+  <button id="midiPlay100" onclick="playKey(100)"></button>
+  <button id="midiPlay101" onclick="playKey(101)"></button>
+  <button id="midiPlay102" onclick="playKey(102)"></button>
+  <button id="midiPlay103" onclick="playKey(103)"></button>
+  <button id="midiPlay104" onclick="playKey(104)"></button>
+  <button id="midiPlay105" onclick="playKey(105)"></button>
+  <button id="midiPlay106" onclick="playKey(106)"></button>
+  <button id="midiPlay107" onclick="playKey(107)"></button>
+  <button id="midiPlay108" onclick="playKey(108)"></button>
+  <button id="midiPlay109" onclick="playKey(109)"></button>
+  <button id="midiPlay110" onclick="playKey(110)"></button>
+  <button id="midiPlay111" onclick="playKey(111)"></button>
+  <button id="midiPlay112" onclick="playKey(112)"></button>
+  <button id="midiPlay113" onclick="playKey(113)"></button>
+  <button id="midiPlay114" onclick="playKey(114)"></button>
+  <button id="midiPlay115" onclick="playKey(115)"></button>
+  <button id="midiPlay116" onclick="playKey(116)"></button>
+  <button id="midiPlay117" onclick="playKey(117)"></button>
+  <button id="midiPlay118" onclick="playKey(118)"></button>
+  <button id="midiPlay119" onclick="playKey(119)"></button>
+  <button id="midiPlay120" onclick="playKey(120)"></button>
+  <button id="midiPlay121" onclick="playKey(121)"></button>
+  <button id="midiPlay122" onclick="playKey(122)"></button>
+  <button id="midiPlay123" onclick="playKey(123)"></button>
+  <button id="midiPlay124" onclick="playKey(124)"></button>
+  <button id="midiPlay125" onclick="playKey(125)"></button>
+  <button id="midiPlay126" onclick="playKey(126)"></button>
+  <button id="midiPlay127" onclick="playKey(127)"></button>
 </body>
+
 </html>
