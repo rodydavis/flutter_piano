@@ -1,14 +1,9 @@
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
-import 'package:flutter/services.dart';
-import 'package:flutter_midi/flutter_midi.dart';
-import 'package:localstorage/localstorage.dart';
-import 'package:persist_theme/persist_theme.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter/material.dart';
+
 import 'ui/home/screen.dart';
 
 void main() {

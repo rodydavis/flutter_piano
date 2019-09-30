@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:vibrate/vibrate.dart';
 
-import '../../utils/index.dart';
+import '../../plugins/app_review/app_review.dart';
+import '../../plugins/vibrate/vibrate.dart';
 import '../common/piano_view.dart';
 import '../settings/screen.dart';
 
@@ -23,7 +23,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   initState() {
     _loadSoundFont();
-    Future.delayed(Duration(seconds: 60)).then((_) => requestReview());
+    Future.delayed(Duration(seconds: 60)).then((_) {
+      if (mounted) ReviewUtils.requestReview();
+    });
     super.initState();
   }
 
@@ -39,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       FlutterMidi.prepare(sf2: sf2, name: "Piano.sf2");
     });
     _loadSettings();
-    Vibrate.canVibrate.then((vibrate) {
+    VibrateUtils.canVibrate.then((vibrate) {
       if (!_isDisposed)
         setState(() {
           canVibrate = vibrate;

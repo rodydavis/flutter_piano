@@ -104,13 +104,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_colorpicker:
-    dependency: transitive
-    description:
-      name: flutter_colorpicker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.3"
   flutter_driver:
     dependency: "direct dev"
     description: flutter
@@ -237,7 +230,7 @@ packages:
     source: hosted
     version: "0.3.18"
   localstorage:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       path: "."
       ref: HEAD
@@ -293,7 +286,7 @@ packages:
       name: package_info
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0+3"
+    version: "0.4.0+6"
   package_resolver:
     dependency: transitive
     description:
@@ -322,13 +315,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0+1"
-  persist_theme:
-    dependency: "direct main"
-    description:
-      name: persist_theme
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.3"
   petitparser:
     dependency: transitive
     description:
@@ -378,13 +364,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
-  scoped_model:
-    dependency: transitive
-    description:
-      name: scoped_model
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   screenshots:
     dependency: "direct dev"
     description:
@@ -509,13 +488,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.6"
-  url_launcher:
+  universal_html:
+    dependency: "direct main"
+    description:
+      name: universal_html
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.6"
+  universal_io:
     dependency: transitive
+    description:
+      name: universal_io
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.4"
+  url_launcher:
+    dependency: "direct main"
     description:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.2"
+    version: "5.1.4"
   vector_math:
     dependency: transitive
     description:
@@ -565,6 +558,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.15"
+  zone_local:
+    dependency: transitive
+    description:
+      name: zone_local
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
 sdks:
   dart: ">=2.4.0 <3.0.0"
-  flutter: ">=0.5.6 <2.0.0"
+  flutter: ">=1.5.0 <2.0.0"
