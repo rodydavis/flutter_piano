@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_piano/plugins/desktop/desktop.dart';
-import 'package:flutter_piano/ui/theme.dart';
 
 import 'data/blocs/blocs.dart';
 import 'generated/i18n.dart';
+import 'plugins/desktop/desktop.dart';
 import 'ui/home/screen.dart';
+import 'ui/theme.dart';
 
 void main() {
   setTargetPlatformForDesktop();
