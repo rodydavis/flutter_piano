@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_midi/flutter_midi.dart';
-import 'package:flutter_piano/data/blocs/blocs.dart';
 
+import '../../data/blocs/blocs.dart';
+import '../../data/blocs/settings/settings.dart';
 import '../../generated/i18n.dart';
 import '../../plugins/app_review/app_review.dart';
 import '../../plugins/vibrate/vibrate.dart';
@@ -51,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    // print(MediaQuery.of(context).size);
     return BlocBuilder<SettingsBloc, SettingsState>(
       builder: (context, state) => Scaffold(
         drawer: Drawer(
@@ -75,30 +75,28 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   min: 0.0,
                   max: 1.0,
                   value: state.settings.widthRatio,
-                  onChanged: (double value) {
-                    if (mounted) setState(() => _widthRatio = value);
-                    _storage.setItem("ratio", value);
-                  }),
+                  onChanged: (double value) =>
+                      BlocProvider.of<SettingsBloc>(context).dispatch(
+                          ChangeSettings(state.settings..widthRatio = value))),
               Divider(),
               ListTile(
                   title: Text("Show Labels"),
                   trailing: Switch(
                       value: state.settings.showLabels,
-                      onChanged: (bool value) {
-                        if (mounted) setState(() => _showLabels = value);
-                        _storage.setItem("labels", value);
-                      })),
+                      onChanged: (bool value) =>
+                          BlocProvider.of<SettingsBloc>(context).dispatch(
+                              ChangeSettings(
+                                  state.settings..showLabels = value)))),
               Container(
-                child: _showLabels
+                child: state.settings.showLabels
                     ? ListTile(
                         title: Text("Only For Octaves"),
                         trailing: Switch(
                             value: state.settings.labelsOnlyOctaves,
-                            onChanged: (bool value) {
-                              if (mounted)
-                                setState(() => _labelsOnlyOctaves = value);
-                              _storage.setItem("octaves", value);
-                            }))
+                            onChanged: (bool value) =>
+                                BlocProvider.of<SettingsBloc>(context).dispatch(
+                                    ChangeSettings(state.settings
+                                      ..labelsOnlyOctaves = value))))
                     : null,
               ),
               Divider(),
@@ -106,22 +104,23 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   title: Text("Disable Scroll"),
                   trailing: Switch(
                       value: state.settings.disableScroll,
-                      onChanged: (bool value) {
-                        if (mounted) setState(() => _disableScroll = value);
-                        _storage.setItem("scroll", value);
-                      })),
+                      onChanged: (bool value) =>
+                          BlocProvider.of<SettingsBloc>(context).dispatch(
+                              ChangeSettings(
+                                  state.settings..disableScroll = value)))),
               Divider(),
               Container(
                 child: canVibrate
                     ? ListTile(
                         title: Text("Key Feedback"),
                         trailing: Switch(
-                            value: state.settings.shouldVibrate,
-                            onChanged: (bool value) {
-                              if (mounted)
-                                setState(() => shouldVibrate = value);
-                              _storage.setItem("vibrate", value);
-                            }))
+                          value: state.settings.shouldVibrate,
+                          onChanged: (bool value) =>
+                              BlocProvider.of<SettingsBloc>(context).dispatch(
+                                  ChangeSettings(
+                                      state.settings..shouldVibrate = value)),
+                        ),
+                      )
                     : null,
               ),
             ],
@@ -139,14 +138,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             DarkModeToggle(),
           ],
         ),
-        body: _buildKeys(context),
+        body: state is SettingsReady
+            ? _buildKeys(context, state.settings)
+            : Container(child: Center(child: CircularProgressIndicator())),
       ),
     );
   }
 
-  Widget _buildKeys(BuildContext context) {
-    double = keyWidth = 40 + (80 * (_widthRatio ?? 0.5));
-    final _vibrate = shouldVibrate && canVibrate;
+  Widget _buildKeys(BuildContext context, Settings settings) {
+    double keyWidth = 40 + (80 * (settings.widthRatio ?? 0.5));
+    final _vibrate = settings.shouldVibrate && canVibrate;
     if (MediaQuery.of(context).size.height > 600) {
       return Flex(
         direction: Axis.vertical,
@@ -154,18 +155,18 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           Flexible(
             child: PianoView(
               keyWidth: keyWidth,
-              showLabels: _showLabels,
-              labelsOnlyOctaves: _labelsOnlyOctaves,
-              disableScroll: _disableScroll,
+              showLabels: settings.showLabels,
+              labelsOnlyOctaves: settings.labelsOnlyOctaves,
+              disableScroll: settings.disableScroll,
               feedback: _vibrate,
             ),
           ),
           Flexible(
             child: PianoView(
               keyWidth: keyWidth,
-              showLabels: _showLabels,
-              labelsOnlyOctaves: _labelsOnlyOctaves,
-              disableScroll: _disableScroll,
+              showLabels: settings.showLabels,
+              labelsOnlyOctaves: settings.labelsOnlyOctaves,
+              disableScroll: settings.disableScroll,
               feedback: _vibrate,
             ),
           ),
@@ -174,9 +175,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
     return PianoView(
       keyWidth: keyWidth,
-      showLabels: _showLabels,
-      labelsOnlyOctaves: _labelsOnlyOctaves,
-      disableScroll: _disableScroll,
+      showLabels: settings.showLabels,
+      labelsOnlyOctaves: settings.labelsOnlyOctaves,
+      disableScroll: settings.disableScroll,
       feedback: _vibrate,
     );
   }
