@@ -20,9 +20,10 @@ dependencies:
   app_review: ^1.0.0
   intl: ^0.16.0
   font_awesome_flutter: ^8.4.0
-  # persist_theme: ^1.0.3
   url_launcher: ^5.1.4
   universal_html: ^1.1.6
+  bloc: ^0.15.0
+  flutter_bloc: ^0.21.0
 
 dev_dependencies:
   flutter_test:
