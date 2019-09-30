@@ -139,7 +139,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           ],
         ),
         body: state is SettingsReady
-            ? _buildKeys(context, state.settings)
+            ? Container(
+                color: state.settings.darkMode ? null : Colors.grey[300],
+                child: _buildKeys(context, state.settings),
+              )
             : Container(child: Center(child: CircularProgressIndicator())),
       ),
     );

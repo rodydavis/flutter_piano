@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Settings {
   Settings({
-    this.darkMode = false,
+    this.darkMode = true,
     this.useSystemSetting = true,
     this.locale = const Locale("en", "US"),
     this.widthRatio = 0.5,
