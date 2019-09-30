@@ -5,8 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 import 'package:localstorage/localstorage.dart';
 
+import '../../generated/i18n.dart';
 import '../../plugins/app_review/app_review.dart';
 import '../../plugins/vibrate/vibrate.dart';
+import '../common/index.dart';
 import '../common/piano_view.dart';
 import '../settings/screen.dart';
 
@@ -18,8 +20,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final LocalStorage _storage = new LocalStorage('app_settings');
 
-  bool _isDisposed = false;
-
   @override
   initState() {
     _loadSoundFont();
@@ -29,12 +29,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _isDisposed = true;
-    super.dispose();
-  }
-
   void _loadSoundFont() async {
     FlutterMidi.unmute();
     rootBundle.load("assets/sounds/Piano.sf2").then((sf2) {
@@ -42,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     });
     _loadSettings();
     VibrateUtils.canVibrate.then((vibrate) {
-      if (!_isDisposed)
+      if (mounted)
         setState(() {
           canVibrate = vibrate;
         });
@@ -51,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   void _loadSettings() async {
     await _storage.ready;
-    if (!_isDisposed)
+    if (mounted)
       setState(() {
         _widthRatio = _storage.getItem("ratio") ?? 0.5;
         _showLabels = _storage.getItem("labels") ?? true;
@@ -100,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               max: 1.0,
               value: _widthRatio ?? 0.5,
               onChanged: (double value) {
-                if (!_isDisposed) setState(() => _widthRatio = value);
+                if (mounted) setState(() => _widthRatio = value);
                 _storage.setItem("ratio", value);
               }),
           Divider(),
@@ -109,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               trailing: Switch(
                   value: _showLabels,
                   onChanged: (bool value) {
-                    if (!_isDisposed) setState(() => _showLabels = value);
+                    if (mounted) setState(() => _showLabels = value);
                     _storage.setItem("labels", value);
                   })),
           Container(
@@ -119,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     trailing: Switch(
                         value: _labelsOnlyOctaves,
                         onChanged: (bool value) {
-                          if (!_isDisposed)
+                          if (mounted)
                             setState(() => _labelsOnlyOctaves = value);
                           _storage.setItem("octaves", value);
                         }))
@@ -131,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               trailing: Switch(
                   value: _disableScroll,
                   onChanged: (bool value) {
-                    if (!_isDisposed) setState(() => _disableScroll = value);
+                    if (mounted) setState(() => _disableScroll = value);
                     _storage.setItem("scroll", value);
                   })),
           Divider(),
@@ -142,8 +136,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     trailing: Switch(
                         value: shouldVibrate,
                         onChanged: (bool value) {
-                          if (!_isDisposed)
-                            setState(() => shouldVibrate = value);
+                          if (mounted) setState(() => shouldVibrate = value);
                           _storage.setItem("vibrate", value);
                         }))
                 : null,
@@ -151,13 +144,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         ]),
       )),
       appBar: AppBar(
-          title: Text(
-        "The Pocket Piano",
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: 30.0,
+        title: Text(
+          I18n.of(context).title,
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 30.0,
+          ),
         ),
-      )),
+        actions: <Widget>[
+          DarkModeToggle(),
+        ],
+      ),
       body: _buildKeys(context),
     );
   }

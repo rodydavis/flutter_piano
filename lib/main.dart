@@ -1,13 +1,15 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart'
-    show debugDefaultTargetPlatformOverride;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_piano/plugins/desktop/desktop.dart';
+import 'package:flutter_piano/ui/theme.dart';
 
+import 'data/blocs/blocs.dart';
+import 'generated/i18n.dart';
 import 'ui/home/screen.dart';
 
 void main() {
-  _setTargetPlatformForDesktop();
+  setTargetPlatformForDesktop();
   runApp(MyApp());
 }
 
@@ -21,54 +23,63 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // final ThemeModel _model = ThemeModel(customLightTheme: ThemeData.dark());
-  // final LocalStorage _storage = new LocalStorage('app_settings');
+  final _settingsBloc = SettingsBloc();
 
   @override
   void initState() {
-    try {
-      // _model.init();
-      // _storage.ready.then((_) {
-      //   final bool _fresh = _storage.getItem("fresh_install");
-      //   if (_fresh ?? true) {
-      //     _model.changeDarkMode(true);
-      //     _storage.setItem('fresh_install', false);
-      //   }
-      // });
-    } catch (e) {
-      print("Error Loading Theme: $e");
-    }
-
+    _settingsBloc.dispatch(CheckSettings());
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    // return ScopedModel<ThemeModel>(
-    //     model: _model,
-    //     child: new ScopedModelDescendant<ThemeModel>(
-    //         builder: (context, child, model) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'The Pocket Piano',
-      theme: ThemeData.dark(),
-      home: HomeScreen(),
-    );
-    // }));
+  void dispose() {
+    _settingsBloc.dispose();
+    super.dispose();
   }
-}
 
-/// If the current platform is desktop, override the default platform to
-/// a supported platform (iOS for macOS, Android for Linux and Windows).
-/// Otherwise, do nothing.
-void _setTargetPlatformForDesktop() {
-  TargetPlatform targetPlatform;
-  if (Platform.isMacOS) {
-    targetPlatform = TargetPlatform.iOS;
-  } else if (Platform.isLinux || Platform.isWindows) {
-    targetPlatform = TargetPlatform.android;
-  }
-  if (targetPlatform != null) {
-    debugDefaultTargetPlatformOverride = targetPlatform;
+  @override
+  Widget build(BuildContext context) {
+    final i18n = I18n.delegate;
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SettingsBloc>(builder: (_) => _settingsBloc),
+      ],
+      child: BlocListener<SettingsBloc, SettingsState>(
+        listener: (context, state) {
+          if (state is SettingsReady) {
+            I18n.locale = state.settings.locale;
+          }
+        },
+        child: BlocBuilder<SettingsBloc, SettingsState>(
+          builder: (context, settingState) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme:
+                settingState is SettingsReady && settingState.settings.darkMode
+                    ? ThemeUtils.dark
+                    : ThemeUtils.light,
+            darkTheme: settingState is SettingsReady &&
+                    settingState.settings.useSystemSetting
+                ? ThemeUtils.dark
+                : null,
+            home: HomeScreen(),
+            onGenerateTitle: (context) => I18n.of(context).title,
+            locale: settingState is SettingsReady
+                ? settingState.settings.locale
+                : Locale("en", "US"),
+            localizationsDelegates: [
+              i18n,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: i18n.supportedLocales,
+            localeResolutionCallback: i18n.resolution(
+              fallback: settingState is SettingsReady
+                  ? settingState.settings.locale
+                  : Locale("en", "US"),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
