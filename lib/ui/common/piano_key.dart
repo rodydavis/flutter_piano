@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_midi/flutter_midi.dart';
 import 'package:tonic/tonic.dart';
 
+import '../../plugins/midi/midi.dart';
 import '../../plugins/vibrate/vibrate.dart';
 
 class PianoKey extends StatelessWidget {
@@ -37,13 +37,13 @@ class PianoKey extends StatelessWidget {
                   highlightColor: Colors.grey,
                   onTap: () {},
                   onTapDown: (_) {
-                    FlutterMidi.playMidiNote(midi: midi);
+                    MidiUtils.play(midi);
                     if (feedback) {
                       VibrateUtils.light();
                     }
                   },
                   onTapCancel: () {
-                    FlutterMidi.stopMidiNote(midi: midi);
+                    MidiUtils.stop(midi);
                   },
                 ))),
         Positioned(
