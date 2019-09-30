@@ -66,7 +66,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     MaterialPageRoute(builder: (context) => SettingsScreen()));
               },
             ),
-            Divider(),
             if (state is SettingsReady) ...[
               ListTile(title: Text("Change Width")),
               Slider(
@@ -78,7 +77,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   onChanged: (double value) =>
                       BlocProvider.of<SettingsBloc>(context).dispatch(
                           ChangeSettings(state.settings..widthRatio = value))),
-              Divider(),
               ListTile(
                   title: Text("Show Labels"),
                   trailing: Switch(
@@ -99,7 +97,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       ..labelsOnlyOctaves = value))))
                     : null,
               ),
-              Divider(),
               ListTile(
                   title: Text("Disable Scroll"),
                   trailing: Switch(
@@ -108,7 +105,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           BlocProvider.of<SettingsBloc>(context).dispatch(
                               ChangeSettings(
                                   state.settings..disableScroll = value)))),
-              Divider(),
               Container(
                 child: canVibrate
                     ? ListTile(
