@@ -12,6 +12,8 @@ platform :ios do
       git_url: "git@github.com:AppleEducate/signing.git",
       username: "irody@icloud.com"
     )
+    sh("Checking Installed Certs...")
+    sh("security find-identity -v -p codesigning")
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
       sh("flutter", "clean")
