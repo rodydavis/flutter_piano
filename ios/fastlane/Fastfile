@@ -6,7 +6,7 @@ platform :ios do
   desc "Prepare and archive app"
   lane :prepare  do |options|
     setup_ci(force: true)
-    GITHUB_TOKEN = ENV['$GITHUB_TOKEN']
+    GITHUB_TOKEN = ENV['GITHUB_API_TOKEN']
     match(
       type: "appstore",
       readonly: true,
