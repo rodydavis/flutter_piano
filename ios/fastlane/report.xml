@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="0: update_fastlane" time="5.032297">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.000925">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: setup_ci" time="0.001601">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: match" time="2.353305">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: Switch to ios prepare lane" time="0.001137">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: flutter packages get" time="2.174653">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: flutter clean" time="7.875549">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="7: flutter build ios" time="76.34166">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="8: build_ios_app" time="108.739512">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="9: changelog_from_git_commits" time="0.083392">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>

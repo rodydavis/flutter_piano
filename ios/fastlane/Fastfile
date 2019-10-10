@@ -1,24 +1,52 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+update_fastlane(nightly: true)
 
 default_platform(:ios)
 
 platform :ios do
+  desc "Prepare and archive app"
+  lane :prepare  do |options|
+    Dir.chdir "../.." do
+      sh("flutter", "packages", "get")
+      sh("flutter", "clean")
+      sh("flutter", "build", "ios")
+    end
+    build_ios_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner"
+    )
+  end
+  
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
-    upload_to_testflight
+    setup_ci(force: true)
+    match(type: "appstore", readonly: true)
+    prepare(release: false)
+    pilot(
+      changelog: changelog_from_git_commits,
+      skip_waiting_for_build_processing: true
+    )
+    add_git_tag(
+      grouping: "fastlane-builds",
+      prefix: "v",
+      build_number: get_build_number
+    )
+  end
+
+  desc "Push a new release build to the App Store"
+  lane :release do
+    setup_ci(force: true)
+    match(type: "appstore", readonly: true)
+    prepare(release: true)
+    deliver(
+      submit_for_review: true,
+      automatic_release: true,
+      skip_screenshots: true,
+      force: true
+    )
+    add_git_tag(
+      grouping: "release",
+      prefix: "v",
+      build_number: get_version_number
+    )   
   end
 end

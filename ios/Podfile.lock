@@ -15,7 +15,7 @@ PODS:
 
 DEPENDENCIES:
   - app_review (from `.symlinks/plugins/app_review/ios`)
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `.symlinks/flutter/ios-release`)
   - flutter_midi (from `.symlinks/plugins/flutter_midi/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -26,7 +26,7 @@ EXTERNAL SOURCES:
   app_review:
     :path: ".symlinks/plugins/app_review/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: ".symlinks/flutter/ios-release"
   flutter_midi:
     :path: ".symlinks/plugins/flutter_midi/ios"
   package_info:
@@ -39,14 +39,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/vibrate/ios"
 
 SPEC CHECKSUMS:
-  app_review: 017f0ac7e570c624a9c763b2b0f4d4afdb6c8a00
-  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  flutter_midi: f2346c9598a8330d6ce607ba63192f42e8d530ae
-  package_info: d7c98b64f60add4c2908b9d94d82a45d3c8827ad
-  path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
-  url_launcher: 92b89c1029a0373879933c21642958c874539095
-  vibrate: 8d9cb77859e02b88730c44a9907f561ddca25ca1
+  app_review: 9496df930315fcc396542b68ad915e2d437dec71
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_midi: 4fe7280cf156c668fe92445f384b1bc440473cdb
+  package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
+  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
+  url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
+  vibrate: 967ba16b8bd87d2fa3646472bb10429f1927c32f
 
 PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.7.2
