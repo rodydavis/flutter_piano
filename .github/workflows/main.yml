@@ -42,16 +42,14 @@ jobs:
     - uses: webfactory/ssh-agent@v0.1.1
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    - name: Set Fastlane Env
-      run: echo Adding Tokens!
-      env:
-        GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
     - uses: maierj/fastlane-action@v0.9.5
       with:
         lane: 'beta'
         subdirectory: 'ios'
-    - name: Upload Web Folder
+      env:
+        GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+    - name: Upload iPA
       uses: actions/upload-artifact@master
       with:
         name: web-build
