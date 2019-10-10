@@ -5,8 +5,7 @@ default_platform(:ios)
 platform :ios do
   desc "Prepare and archive app"
   lane :prepare  do |options|
-    setup_ci(force: true)
-    # GITHUB_TOKEN = "705b299ea1e2f1e605d2812d7937da4ea8347917" 
+    setup_ci(force: true) 
     match(
       type: "appstore",
       readonly: true,
