@@ -1,5 +1,7 @@
 git_url("https://github.com/AppleEducate/signing")
 
+username "AppleEducate" 
+
 storage_mode("git")
 
 type("development") # The default type, can be: appstore, adhoc, enterprise or development
