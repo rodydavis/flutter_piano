@@ -1,36 +1,15 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
 update_fastlane(nightly: true)
 
 default_platform(:ios)
 
-build_number = 0
-
 platform :ios do
   desc "Prepare and archive app"
   lane :prepare  do |options|
-    # Dir.chdir "#{project_path}/ios" do
-    #   sh('xcodebuild -sdk "${TARGET_SDK}" -xcconfig "${CONFIG_FILE_PATH}"  -configuration Release clean')
-    # end
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
       sh("flutter", "clean")
-      build_number = number_of_commits(all: true)
-      sh("flutter", "build", "ios", "--build-number=#{build_number}")
+      sh("flutter", "build", "ios")
     end
-    setup_ci(force: true)
-    match(type: "appstore", readonly: true)
     build_ios_app(
       workspace: "Runner.xcworkspace",
       scheme: "Runner"
@@ -39,26 +18,39 @@ platform :ios do
   
   desc "Push a new beta build to TestFlight"
   lane :beta do
+    setup_ci(force: true)
+    match(type: "appstore", readonly: true)
     prepare(release: false)
-    pilot
+    pilot(
+      changelog: changelog_from_git_commits,
+      skip_waiting_for_build_processing: true
+    )
     add_git_tag(
       grouping: "fastlane-builds",
       prefix: "v",
-      build_number: build_number
+      build_number: get_build_number
     )
   end
 
   desc "Push a new release build to the App Store"
   lane :release do
+    setup_ci(force: true)
+    match(type: "appstore", readonly: true)
     prepare(release: true)
-    upload_to_app_store(
+    release_notes({
+      'default' => changelog_from_git_commits
+    })
+    deliver(
       submit_for_review: true,
       automatic_release: true,
       skip_screenshots: true,
       force: true,
+      changelog: changelog_from_git_commits
     )
     add_git_tag(
-      tag: git_branch
+      grouping: "release",
+      prefix: "v",
+      build_number: get_version_number
     )   
   end
 end
