@@ -38,6 +38,7 @@ jobs:
       with:
           channel: 'dev'
     - run: flutter pub get
+    - run:  mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
     - uses: maierj/fastlane-action@v0.9.5
       with:
         lane: 'beta'
