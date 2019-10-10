@@ -46,8 +46,9 @@ jobs:
       with:
         lane: 'beta'
         subdirectory: 'ios'
-        github_api_token: ${{ secrets.GITHUB_TOKEN }}
-        match_password: ${{ secrets.MATCH_PASSWORD }}
+      env:
+        GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
     - name: Upload iPA
       uses: actions/upload-artifact@master
       with:
