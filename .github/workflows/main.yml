@@ -37,12 +37,11 @@ jobs:
     - uses: subosito/flutter-action@v1
       with:
           channel: 'dev'
-    - run: |
-        echo "$SUPPLYFILE" | base64 -d > app/android/supplyfile.json
-        env:
-           SUPPLYFILE: ${{ secrets.SUPPLYFILE }}
     - run: flutter pub get
-    - run: flutter build ios
+    - uses: maierj/fastlane-action@v0.9.5
+      with:
+        lane: 'beta'
+        subdirectory: 'ios'
     - name: Upload Web Folder
       uses: actions/upload-artifact@master
       with:
