@@ -8,7 +8,7 @@ platform :ios do
     setup_ci(force: true) 
     match(
       type: "appstore",
-      readonly: true,
+      # readonly: true,
       git_url: "git@github.com:AppleEducate/signing.git",
       username: "irody@icloud.com"
     )
