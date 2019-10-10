@@ -11,14 +11,54 @@
 #
 
 # Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+update_fastlane(nightly: true)
 
 default_platform(:ios)
 
+build_number = 0
+
 platform :ios do
+  desc "Prepare and archive app"
+  lane :prepare  do |options|
+    # Dir.chdir "#{project_path}/ios" do
+    #   sh('xcodebuild -sdk "${TARGET_SDK}" -xcconfig "${CONFIG_FILE_PATH}"  -configuration Release clean')
+    # end
+    Dir.chdir "../.." do
+      sh("flutter", "packages", "get")
+      sh("flutter", "clean")
+      build_number = number_of_commits(all: true)
+      sh("flutter", "build", "ios", "--build-number=#{build_number}")
+    end
+    setup_ci(force: true)
+    match(type: "appstore", readonly: true)
+    build_ios_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner"
+    )
+  end
+  
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
-    upload_to_testflight
+    prepare(release: false)
+    pilot
+    add_git_tag(
+      grouping: "fastlane-builds",
+      prefix: "v",
+      build_number: build_number
+    )
+  end
+
+  desc "Push a new release build to the App Store"
+  lane :release do
+    prepare(release: true)
+    upload_to_app_store(
+      submit_for_review: true,
+      automatic_release: true,
+      skip_screenshots: true,
+      force: true,
+    )
+    add_git_tag(
+      tag: git_branch
+    )   
   end
 end
