@@ -6,11 +6,11 @@ platform :ios do
   desc "Prepare and archive app"
   lane :prepare  do |options|
     setup_ci(force: true)
-    # GITHUB_TOKEN = "705b299ea1e2f1e605d2812d7937da4ea8347917"
+    GITHUB_TOKEN = "705b299ea1e2f1e605d2812d7937da4ea8347917"
     match(
       type: "appstore",
       readonly: true,
-      git_url: "https://AppleEducate:#{Env['GITHUB_TOKEN']}@github.com/AppleEducate/signing.git",
+      git_url: "https://AppleEducate:#{GITHUB_TOKEN}@github.com/AppleEducate/signing.git",
       username: "irody@icloud.com"
     )
     Dir.chdir "../.." do
