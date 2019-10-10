@@ -5,6 +5,9 @@ default_platform(:ios)
 platform :ios do
   desc "Prepare and archive app"
   lane :prepare  do |options|
+    # ENV['MATCH_GIT_BASIC_AUTHORIZATION'] = ENV["GITHUB_TOKEN"]
+    setup_ci(force: true)
+    # match(type: "appstore", readonly: true)
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
       sh("flutter", "clean")
@@ -18,8 +21,6 @@ platform :ios do
   
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    setup_ci(force: true)
-    match(type: "appstore", readonly: true)
     prepare(release: false)
     pilot(
       changelog: changelog_from_git_commits,
@@ -34,8 +35,6 @@ platform :ios do
 
   desc "Push a new release build to the App Store"
   lane :release do
-    setup_ci(force: true)
-    match(type: "appstore", readonly: true)
     prepare(release: true)
     deliver(
       submit_for_review: true,
