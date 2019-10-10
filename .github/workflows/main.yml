@@ -42,8 +42,8 @@ jobs:
     - uses: webfactory/ssh-agent@v0.1.1
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    - name: Set Faslane Env
-      run: echo Token -> $GITHUB_API_TOKEN!
+    - name: Set Fastlane Env
+      run: echo Adding Tokens!
       env:
         GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
