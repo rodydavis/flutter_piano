@@ -39,7 +39,7 @@ jobs:
           channel: 'dev'
     - run: flutter pub get
     - run:  mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-    - name: Hello world
+    - name: Set Faslane Env
       run: echo Token -> $GITHUB_API_TOKEN!
       env:
         GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
