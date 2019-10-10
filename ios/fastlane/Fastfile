@@ -5,12 +5,24 @@ default_platform(:ios)
 platform :ios do
   desc "Prepare and archive app"
   lane :prepare  do |options|
-    setup_ci(force: true) 
+    setup_ci(force: true)
+    STORE_NAME = 'ci_keychain'
+    STORE_PWD = 'FlutterRocks'
+    create_keychain(
+      name: STORE_NAME,
+      password: STORE_PWD,
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: true
+    )
     match(
       type: "appstore",
-      # readonly: true,
+      readonly: is_ci,
       git_url: "git@github.com:AppleEducate/signing.git",
-      username: "irody@icloud.com"
+      username: "irody@icloud.com",
+      keychain_name: STORE_NAME,
+      keychain_password: STORE_PWD
     )
     sh("Checking Installed Certs...")
     sh("security find-identity -v -p codesigning")
