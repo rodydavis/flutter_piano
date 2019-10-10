@@ -18,10 +18,11 @@ platform :ios do
     )
     match(
       type: "appstore",
-      readonly: is_ci,
+      readonly: true,
       keychain_name: STORE_NAME,
       keychain_password: STORE_PWD
     )
+    enable_automatic_code_signing
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
       sh("flutter", "clean")

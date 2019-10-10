@@ -5,52 +5,52 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: update_fastlane" time="6.287682">
+      <testcase classname="fastlane.lanes" name="0: update_fastlane" time="4.107151">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.001344">
+      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.000902">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: Switch to ios prepare lane" time="0.001419">
+      <testcase classname="fastlane.lanes" name="2: Switch to ios prepare lane" time="0.000788">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: setup_ci" time="0.001099">
+      <testcase classname="fastlane.lanes" name="3: setup_ci" time="0.000741">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: create_keychain" time="0.11597">
+      <testcase classname="fastlane.lanes" name="4: create_keychain" time="0.110059">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: is_ci" time="0.001816">
+      <testcase classname="fastlane.lanes" name="5: match" time="2.087597">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: match" time="4.760676">
+      <testcase classname="fastlane.lanes" name="6: automatic_code_signing" time="0.084027">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="7: flutter packages get" time="2.517772">
+      <testcase classname="fastlane.lanes" name="7: flutter packages get" time="1.965017">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="8: flutter clean" time="8.212714">
+      <testcase classname="fastlane.lanes" name="8: flutter clean" time="5.884594">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="9: flutter build ios" time="25.138621">
+      <testcase classname="fastlane.lanes" name="9: flutter build ios" time="13.684901">
         
       </testcase>
     
