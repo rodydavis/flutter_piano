@@ -6,13 +6,12 @@ platform :ios do
   desc "Prepare and archive app"
   lane :prepare  do |options|
     setup_ci(force: true)
-    GITHUB_TOKEN = "705b299ea1e2f1e605d2812d7937da4ea8347917"
+    # GITHUB_TOKEN = "705b299ea1e2f1e605d2812d7937da4ea8347917"
     match(
       type: "appstore",
       readonly: true,
-      git_url: "https://github.com/AppleEducate/signing.git",
-      username: "irody@icloud.com",
-      git_basic_authorization: GITHUB_TOKEN
+      git_url: "git@github.com:AppleEducate/signing.git",
+      username: "irody@icloud.com"
     )
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
