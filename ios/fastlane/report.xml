@@ -5,12 +5,52 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: update_fastlane" time="3.828">
+      <testcase classname="fastlane.lanes" name="0: update_fastlane" time="6.287682">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.000911">
+      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.001344">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: Switch to ios prepare lane" time="0.001419">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: setup_ci" time="0.001099">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: create_keychain" time="0.11597">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: is_ci" time="0.001816">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: match" time="4.760676">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="7: flutter packages get" time="2.517772">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="8: flutter clean" time="8.212714">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="9: flutter build ios" time="25.138621">
         
       </testcase>
     

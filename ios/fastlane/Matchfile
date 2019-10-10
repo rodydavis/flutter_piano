@@ -1,5 +1,4 @@
-git_url("https://github.com/AppleEducate/signing")
-
+git_url("git@github.com:AppleEducate/signing.git")
 storage_mode("git")
 type("appstore")
 app_identifier("com.appleeducate.pocketpiano")
