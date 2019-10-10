@@ -37,15 +37,11 @@ platform :ios do
     setup_ci(force: true)
     match(type: "appstore", readonly: true)
     prepare(release: true)
-    release_notes({
-      'default' => changelog_from_git_commits
-    })
     deliver(
       submit_for_review: true,
       automatic_release: true,
       skip_screenshots: true,
-      force: true,
-      changelog: changelog_from_git_commits
+      force: true
     )
     add_git_tag(
       grouping: "release",
