@@ -10,8 +10,9 @@ platform :ios do
     match(
       type: "appstore",
       readonly: true,
-      git_url: "https://AppleEducate:#{GITHUB_TOKEN}@github.com/AppleEducate/signing.git",
-      username: "irody@icloud.com"
+      git_url: "https://github.com/AppleEducate/signing.git",
+      username: "irody@icloud.com",
+      git_basic_authorization: GITHUB_TOKEN
     )
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
