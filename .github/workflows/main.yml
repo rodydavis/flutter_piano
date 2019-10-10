@@ -37,6 +37,10 @@ jobs:
     - uses: subosito/flutter-action@v1
       with:
           channel: 'dev'
+    - run: |
+        echo "$SUPPLYFILE" | base64 -d > app/android/supplyfile.json
+        env:
+           SUPPLYFILE: ${{ secrets.SUPPLYFILE }}
     - run: flutter pub get
     - run: flutter build ios
     - name: Upload Web Folder
