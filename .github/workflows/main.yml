@@ -40,6 +40,7 @@ jobs:
     - run: flutter pub get
     - run:  mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
     - run: |
+        echo "$GITHUB_TOKEN"
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - uses: maierj/fastlane-action@v0.9.5
