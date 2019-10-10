@@ -9,7 +9,7 @@ platform :ios do
     match(
       type: "appstore",
       readonly: true,
-      git_url: "git@github.com:AppleEducate/signing.git",
+      git_url: "https://$GITHUB_TOKEN@github.com/AppleEducate/signing",
       username: "irody@icloud.com"
     )
     Dir.chdir "../.." do
