@@ -1,0 +1,139 @@
+name: Build and Deploy Website
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+jobs:
+  build_web:
+    name: Build Flutter Project (Web)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '12.x'
+    - uses: subosito/flutter-action@v1
+      with:
+          channel: 'dev'
+    - run: flutter pub get
+    - run: flutter config --enable-web
+    - run: flutter build web
+    - name: Upload Web Folder
+      uses: actions/upload-artifact@master
+      with:
+        name: web-build
+        path: build/web
+  build_ios:
+    name: Build Flutter Project (iOS)
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '12.x'
+    - uses: subosito/flutter-action@v1
+      with:
+          channel: 'dev'
+    - run: flutter pub get
+    - run: flutter build ios
+    - name: Upload iPA
+      uses: actions/upload-artifact@master
+      with:
+        name: ios-build
+        path: build/ios/iphoneos/Runner.app
+  build_android:
+    name: Build Flutter Project (Android)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '12.x'
+    - uses: subosito/flutter-action@v1
+      with:
+          channel: 'dev'
+    - run: flutter pub get
+    - run: flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
+#     - run: appbundle --target-platform android-arm,android-arm64
+    - name: Upload APKs
+      uses: actions/upload-artifact@master
+      with:
+        name: apk-build
+        path: build/app/outputs/apk/release
+  deploy_web:
+    name: Deploy Website to Firebase Hosting
+    needs: build_web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: web-build
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting --public web-build
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_ID: default
+# name: Build and Deploy iOS
+# on: push
+# jobs:
+#   build:
+#     name: Build
+#     runs-on: macOS-latest
+#     steps:
+#     - uses: actions/checkout@v1
+#     - uses: actions/setup-java@v1
+#       with:
+#         java-version: '12.x'
+#     - uses: subosito/flutter-action@v1
+#       with:
+#           channel: 'dev'
+#     - run: flutter pub get
+#     - run: flutter test
+#     - run: flutter build ios
+#     - name: Upload iPA
+#       uses: ncipollo/release-action@v1
+#       with:
+#         commit: master
+#         tag: v1
+#         artifacts: "build/ios/iphoneos/Runner.app"
+#         token: ${{ secrets.GITHUB_TOKEN }}
+
+# name: Build and Deploy Android
+# on: push
+# jobs:
+#   build:
+#     name: Build
+#     strategy:
+#       matrix:
+#         os:
+# #           - macOS-latest
+# #           - windows-latest
+# #           - ubuntu-latest
+#     runs-on: ${{matrix.os}}
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v1
+#     - uses: actions/setup-java@v1
+#       with:
+#         java-version: '12.x'
+#     - uses: subosito/flutter-action@v1
+#       with:
+#           channel: 'dev'
+#     - run: flutter pub get
+#     - run: flutter test
+#     - run: flutter build apk --debug --split-per-abi
+#     - name: Upload APKs
+#       uses: ncipollo/release-action@v1
+#       with:
+#         commit: master
+#         tag: v1
+#         artifacts: "build/app/outputs/apk/debug/*.apk"
+#         token: ${{ secrets.GITHUB_TOKEN }}
