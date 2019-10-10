@@ -5,9 +5,14 @@ default_platform(:ios)
 platform :ios do
   desc "Prepare and archive app"
   lane :prepare  do |options|
-    # ENV['MATCH_GIT_BASIC_AUTHORIZATION'] = ENV["GITHUB_TOKEN"]
     setup_ci(force: true)
-    # match(type: "appstore", readonly: true)
+    GITHUB_TOKEN = ENV['GITHUB_API_TOKEN']
+    match(
+      type: "appstore",
+      readonly: true,
+      git_url: "https://#{GITHUB_TOKEN}@github.com/AppleEducate/signing",
+      username: "irody@icloud.com"
+    )
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
       sh("flutter", "clean")
