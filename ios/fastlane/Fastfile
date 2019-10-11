@@ -28,11 +28,11 @@ end
 platform :ios do
   desc "Prepare and archive app"
   lane :prepare  do |options|
-    Dir.chdir "../.." do
-      sh("flutter", "packages", "get")
-      sh("flutter", "clean")
-      sh("flutter", "build", "ios", "--release", "--no-codesign")
-    end
+    # Dir.chdir "../.." do
+    #   sh("flutter", "packages", "get")
+    #   sh("flutter", "clean")
+    #   sh("flutter", "build", "ios", "--release", "--no-codesign")
+    # end
     build_ios_app(
       workspace: "Runner.xcworkspace",
       scheme: "Runner"
