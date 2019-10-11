@@ -20,7 +20,7 @@ before_all do
       readonly: is_ci,
       # keychain_name: STORE_NAME,
       # keychain_password: STORE_PWD,
-      shallow_clone: true,
+      shallow_clone: true
     )
   end
 end
