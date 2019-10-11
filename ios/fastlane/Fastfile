@@ -3,6 +3,7 @@ update_fastlane(nightly: true)
 default_platform(:ios)
 
 before_all do
+  xcode_select "/Applications/Xcode.app"
   if is_ci?
     setup_ci(force: true)
     # STORE_NAME = 'ci_keychain'
