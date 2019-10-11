@@ -6,21 +6,21 @@ before_all do
   xcode_select "/Applications/Xcode.app"
   if is_ci?
     setup_ci(force: true)
-    # STORE_NAME = 'ci_keychain'
-    # STORE_PWD = 'FlutterRocks'
-    # create_keychain(
-    #   name: STORE_NAME,
-    #   password: STORE_PWD,
-    #   default_keychain: true,
-    #   unlock: true,
-    #   timeout: 3600,
-    #   lock_when_sleeps: true
-    # )
+    STORE_NAME = 'ci_keychain'
+    STORE_PWD = 'FlutterRocks'
+    create_keychain(
+      name: STORE_NAME,
+      password: STORE_PWD,
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: true
+    )
     match(
       type: "appstore",
       readonly: is_ci,
-      # keychain_name: STORE_NAME,
-      # keychain_password: STORE_PWD,
+      keychain_name: STORE_NAME,
+      keychain_password: STORE_PWD,
       shallow_clone: true
     )
   end
