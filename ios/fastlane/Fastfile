@@ -2,9 +2,8 @@ update_fastlane(nightly: true)
 
 default_platform(:ios)
 
-platform :ios do
-  desc "Prepare and archive app"
-  lane :prepare  do |options|
+before_all do
+  if is_ci?
     setup_ci(force: true)
     STORE_NAME = 'ci_keychain'
     STORE_PWD = 'FlutterRocks'
@@ -18,11 +17,18 @@ platform :ios do
     )
     match(
       type: "appstore",
-      readonly: true,
+      readonly: is_ci,
       keychain_name: STORE_NAME,
-      keychain_password: STORE_PWD
+      keychain_password: STORE_PWD,
+      shallow_clone: true,
     )
     enable_automatic_code_signing
+  end
+end
+
+platform :ios do
+  desc "Prepare and archive app"
+  lane :prepare  do |options|
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
       sh("flutter", "clean")
