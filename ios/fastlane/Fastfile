@@ -22,7 +22,6 @@ before_all do
       keychain_password: STORE_PWD,
       shallow_clone: true,
     )
-    enable_automatic_code_signing
   end
 end
 
