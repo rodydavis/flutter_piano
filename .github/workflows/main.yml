@@ -40,17 +40,17 @@ jobs:
     - run: flutter pub get
     - run: flutter clean
     - run: flutter build ios --release --no-codesign
-    - run:  mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-    - uses: webfactory/ssh-agent@v0.1.1
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    - uses: maierj/fastlane-action@v0.9.5
-      with:
-        lane: 'beta'
-        subdirectory: 'ios'
-      env:
-        GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+#     - run:  mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+#     - uses: webfactory/ssh-agent@v0.1.1
+#       with:
+#         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+#     - uses: maierj/fastlane-action@v0.9.5
+#       with:
+#         lane: 'beta'
+#         subdirectory: 'ios'
+#       env:
+#         GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
     - name: Upload iPA
       uses: actions/upload-artifact@master
       with:
@@ -69,6 +69,7 @@ jobs:
           channel: 'dev'
     - run: flutter pub get
     - run: flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
+#     - run: flutter build appbundle --target-platform android-arm,android-arm64
     - name: Upload APK
       uses: actions/upload-artifact@master
       with:
