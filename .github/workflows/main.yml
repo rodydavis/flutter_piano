@@ -40,11 +40,6 @@ jobs:
     - run: flutter pub get
     - run: flutter clean
     - run: flutter build ios --release --no-codesign
-    - name: Upload iPA
-      uses: actions/upload-artifact@master
-      with:
-        name: ios-build
-        path: build/ios/iphoneos
     - run:  mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
     - uses: webfactory/ssh-agent@v0.1.1
       with:
@@ -56,6 +51,11 @@ jobs:
       env:
         GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+    - name: Upload iPA
+      uses: actions/upload-artifact@master
+      with:
+        name: ios-build
+        path: build/ios/iphoneos
   build_apk:
     name: Build Flutter (Android)
     runs-on: ubuntu-latest
