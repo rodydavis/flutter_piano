@@ -11,7 +11,7 @@ before_all do
     create_keychain(
       name: STORE_NAME,
       password: STORE_PWD,
-      default_keychain: true,
+      # default_keychain: true,
       unlock: true,
       timeout: 3600,
       lock_when_sleeps: true
@@ -22,6 +22,9 @@ before_all do
       keychain_name: STORE_NAME,
       keychain_password: STORE_PWD,
       shallow_clone: true
+    )
+    delete_keychain(
+      name: STORE_NAME
     )
   end
 end
