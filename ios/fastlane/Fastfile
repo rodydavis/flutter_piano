@@ -55,6 +55,7 @@ platform :ios do
       prefix: "v",
       build_number: get_build_number
     )
+    push_to_git_remote
   end
 
   desc "Push a new release build to the App Store"
@@ -70,6 +71,7 @@ platform :ios do
       grouping: "release",
       prefix: "v",
       build_number: get_version_number
-    )   
+    )
+    push_to_git_remote
   end
 end
