@@ -16,6 +16,11 @@ platform :android do
   desc "Push a new beta build to Google Play"
   lane :beta do
     prepare(release: false)
+    firebase_app_distribution(
+      app: "1:284500414675:android:41a93364543c1ac6f00426",
+      groups: "testers",
+      release_notes: changelog_from_git_commits
+    )
     upload_to_play_store(
       track: 'beta',
       aab: "../build/app/outputs/bundle/release/app.aab"

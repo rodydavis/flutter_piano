@@ -1,4 +1,4 @@
-update_fastlane(nightly: true)
+update_fastlane
 
 default_platform(:ios)
 
@@ -49,6 +49,25 @@ platform :ios do
     pilot(
       changelog: changelog_from_git_commits,
       skip_waiting_for_build_processing: true
+    )
+    add_git_tag(
+      grouping: "fastlane-builds",
+      prefix: "v",
+      build_number: get_build_number
+    )
+    push_to_git_remote
+  end
+
+  desc "Push a new beta build to TestFlight"
+  lane :firebase_beta do
+    register_devices(
+      devices_file: "fastlane/devices.txt"
+    )
+    prepare(release: false)
+    firebase_app_distribution(
+      app: "1:284500414675:ios:1135a1c8b4352f51f00426",
+      groups: "testers",
+      release_notes: changelog_from_git_commits
     )
     add_git_tag(
       grouping: "fastlane-builds",
