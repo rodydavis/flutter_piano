@@ -26,6 +26,11 @@ Prepare and archive app
 fastlane ios beta
 ```
 Push a new beta build to TestFlight
+### ios firebase_beta
+```
+fastlane ios firebase_beta
+```
+Push a new beta build to TestFlight
 ### ios release
 ```
 fastlane ios release

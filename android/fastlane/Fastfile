@@ -1,0 +1,50 @@
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Prepare and archive app"
+  lane :prepare  do |options|
+    #bundle_install
+    Dir.chdir "../.." do
+      sh("flutter", "packages", "get")
+      sh("flutter", "clean")
+      sh("flutter", "build", "appbundle", "--release")
+    end
+  end
+  
+  desc "Push a new beta build to Google Play"
+  lane :beta do
+    prepare(release: false)
+    firebase_app_distribution(
+      app: "1:284500414675:android:41a93364543c1ac6f00426",
+      groups: "testers",
+      release_notes: changelog_from_git_commits
+    )
+    upload_to_play_store(
+      track: 'beta',
+      aab: "../build/app/outputs/bundle/release/app.aab"
+    )
+    add_git_tag(
+      grouping: "fastlane-builds",
+      prefix: "v",
+      build_number: android_get_version_code
+    )
+    push_to_git_remote
+  end
+
+  desc "Push a new release build to the Google Play"
+  lane :release do
+    prepare(release: true)
+    upload_to_play_store(
+      track: 'production',
+      aab: "../build/app/outputs/bundle/release/app.aab"
+    )
+    add_git_tag(
+      grouping: "release",
+      prefix: "v",
+      build_number: android_get_version_name
+    )
+    push_to_git_remote
+  end
+end
