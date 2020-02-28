@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'piano_key.dart';
@@ -8,6 +9,7 @@ class PianoOctave extends StatelessWidget {
     this.octave,
     @required this.showLabels,
     @required this.labelsOnlyOctaves,
+    @required this.listenables,
     this.feedback,
   });
 
@@ -16,6 +18,7 @@ class PianoOctave extends StatelessWidget {
   final bool showLabels;
   final bool labelsOnlyOctaves;
   final bool feedback;
+  final Stream<List<int>> listenables;
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +56,19 @@ class PianoOctave extends StatelessWidget {
   }
 
   Widget _buildKey(int midi, bool accidental) {
-    return PianoKey(
-      midi: midi + octave,
-      accidental: accidental,
-      keyWidth: keyWidth,
-      showLabels: showLabels,
-      labelsOnlyOctaves: labelsOnlyOctaves,
-      feedback: feedback,
-    );
+    return StreamBuilder<List<int>>(
+        stream: listenables,
+        initialData: [],
+        builder: (context, snapshot) {
+          return PianoKey(
+            midi: midi + octave,
+            accidental: accidental,
+            keyWidth: keyWidth,
+            showLabels: showLabels,
+            labelsOnlyOctaves: labelsOnlyOctaves,
+            feedback: feedback,
+            isActive: snapshot.data.contains(midi),
+          );
+        });
   }
 }

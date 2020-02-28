@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'piano_octave.dart';
@@ -8,6 +9,7 @@ class PianoView extends StatefulWidget {
     this.showLabels,
     this.keyWidth,
     @required this.labelsOnlyOctaves,
+    @required this.listenables,
     this.disableScroll,
     this.feedback,
   });
@@ -17,6 +19,7 @@ class PianoView extends StatefulWidget {
   final bool labelsOnlyOctaves;
   final bool disableScroll;
   final bool feedback;
+  final Stream<List<int>> listenables;
 
   @override
   _PianoViewState createState() => _PianoViewState();
@@ -33,24 +36,36 @@ class _PianoViewState extends State<PianoView> {
   }
 
   @override
+  void didUpdateWidget(PianoView oldWidget) {
+    if (oldWidget.listenables != widget.listenables) {
+      if (mounted) setState(() {});
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Flex(
       direction: Axis.vertical,
       children: <Widget>[
         Flexible(
           flex: 1,
-          child: Container(
-            child: PianoSlider(
-              keyWidth: widget.keyWidth,
-              currentOctave: _currentOctave,
-              octaveTapped: (int octave) {
-                setState(() {
-                  _currentOctave = octave;
-                });
-                _controller.jumpTo(currentOffset);
-              },
-            ),
-          ),
+          child: StreamBuilder<List<int>>(
+              initialData: [],
+              stream: widget.listenables,
+              builder: (context, snapshot) {
+                return PianoSlider(
+                  activeNotes: snapshot.data,
+                  keyWidth: widget.keyWidth,
+                  currentOctave: _currentOctave,
+                  octaveTapped: (int octave) {
+                    setState(() {
+                      _currentOctave = octave;
+                    });
+                    _controller.jumpTo(currentOffset);
+                  },
+                );
+              }),
         ),
         Flexible(
           flex: 8,
@@ -67,6 +82,7 @@ class _PianoViewState extends State<PianoView> {
                 showLabels: widget.showLabels,
                 labelsOnlyOctaves: widget.labelsOnlyOctaves,
                 feedback: widget.feedback,
+                listenables: widget.listenables,
               );
             },
           ),

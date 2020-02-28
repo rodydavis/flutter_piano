@@ -1,15 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class PianoSlider extends StatelessWidget {
   const PianoSlider({
-    this.keyWidth,
-    this.currentOctave,
-    this.octaveTapped,
+    @required this.activeNotes,
+    @required this.keyWidth,
+    @required this.currentOctave,
+    @required this.octaveTapped,
   });
 
   final double keyWidth;
   final int currentOctave;
   final ValueChanged<int> octaveTapped;
+  final List<int> activeNotes;
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +46,13 @@ class PianoSlider extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              _buildKey(context, false),
-              _buildKey(context, false),
-              _buildKey(context, false),
-              _buildKey(context, false),
-              _buildKey(context, false),
-              _buildKey(context, false),
-              _buildKey(context, false),
+              _buildKey(context, false, octave * 0),
+              _buildKey(context, false, octave * 1),
+              _buildKey(context, false, octave * 3),
+              _buildKey(context, false, octave * 5),
+              _buildKey(context, false, octave * 6),
+              _buildKey(context, false, octave * 8),
+              _buildKey(context, false, octave * 10),
             ],
           ),
           Positioned(
@@ -62,12 +65,12 @@ class PianoSlider extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Container(width: _keyWidth * .5),
-                  _buildKey(context, true),
-                  _buildKey(context, true),
+                  _buildKey(context, true, octave * 2),
+                  _buildKey(context, true, octave * 4),
                   Container(width: _keyWidth),
-                  _buildKey(context, true),
-                  _buildKey(context, true),
-                  _buildKey(context, true),
+                  _buildKey(context, true, octave * 7),
+                  _buildKey(context, true, octave * 9),
+                  _buildKey(context, true, octave * 11),
                   Container(width: _keyWidth * .5),
                 ],
               )),
@@ -87,8 +90,9 @@ class PianoSlider extends StatelessWidget {
     );
   }
 
-  Widget _buildKey(BuildContext context, bool accidental) {
+  Widget _buildKey(BuildContext context, bool accidental, int midi) {
     final _keyWidth = MediaQuery.of(context).size.width / 49;
+    final _active = activeNotes.contains(midi);
     if (accidental) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 1.0),
@@ -96,7 +100,7 @@ class PianoSlider extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: _borderRadius,
-            color: Colors.black,
+            color: _active ? Colors.red : Colors.black,
           ),
         ),
       );
@@ -107,7 +111,7 @@ class PianoSlider extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: _borderRadius,
-          color: Colors.white,
+          color: _active ? Colors.red : Colors.white,
         ),
       ),
     );

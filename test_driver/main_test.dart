@@ -17,6 +17,7 @@ void main() {
     setUpAll(() async {
       // Connect to a running Flutter application instance.
       driver = await FlutterDriver.connect();
+
     });
 
     tearDownAll(() async {

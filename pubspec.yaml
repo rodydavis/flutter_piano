@@ -2,7 +2,7 @@ name: flutter_piano
 description: A Crossplatform Midi Piano built with Flutter.
 author: Rody Davis Jr <rody.davis.jr@gmail.com>
 homepage: https://github.com/AppleEducate/flutter_piano
-version: 1.0.4+48
+version: 1.0.5+52
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -24,6 +24,7 @@ dependencies:
   bloc: ^0.15.0
   flutter_bloc: ^0.21.0
   firebase_analytics: ^5.0.2
+  dart_midi: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -42,4 +43,4 @@ flutter:
   uses-material-design: true
 
   assets:
-   - assets/sounds/Piano.sf2
+    - assets/sounds/
