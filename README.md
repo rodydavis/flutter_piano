@@ -208,6 +208,6 @@ const BorderRadiusGeometry borderRadius = BorderRadius.only(
  ```
  ### Total Dart Code Size: 5039 bytes
  
- ## Special Thenks
+ ## Special Thanks
  - @DFreds
  - @jesusrp98
