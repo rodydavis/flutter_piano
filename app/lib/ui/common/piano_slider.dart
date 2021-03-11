@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_piano/ui/theme.dart';
 
 class PianoSlider extends StatelessWidget {
   const PianoSlider({
-    this.keyWidth,
-    this.currentOctave,
-    this.octaveTapped,
+    @required this.keyWidth,
+    @required this.currentOctave,
+    @required this.octaveTapped,
+    @required this.theme,
   });
 
   final double keyWidth;
   final int currentOctave;
   final ValueChanged<int> octaveTapped;
+  final ThemeUtils theme;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         Container(
+          color: Theme.of(context).backgroundColor,
           padding: EdgeInsets.only(bottom: 8.0),
           child: Row(
             children: <Widget>[
@@ -78,7 +82,7 @@ class PianoSlider extends StatelessWidget {
             bottom: 0.0,
             child: Container(
               color: currentOctave != octave
-                  ? Color.fromARGB(100, 126, 126, 126)
+                  ? Colors.grey.withOpacity(0.7)
                   : null,
             ),
           ),
@@ -96,7 +100,7 @@ class PianoSlider extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: _borderRadius,
-            color: Colors.black,
+            color: theme.secondColor,
           ),
         ),
       );
@@ -107,7 +111,7 @@ class PianoSlider extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: _borderRadius,
-          color: Colors.white,
+          color: theme.firstColor,
         ),
       ),
     );

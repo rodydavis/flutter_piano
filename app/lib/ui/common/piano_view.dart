@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_piano/ui/theme.dart';
 
 import 'piano_octave.dart';
+import 'piano_section.dart';
 import 'piano_slider.dart';
 
 class PianoView extends StatefulWidget {
@@ -41,6 +43,7 @@ class _PianoViewState extends State<PianoView> {
           flex: 1,
           child: Container(
             child: PianoSlider(
+              theme: ThemeUtils(context),
               keyWidth: widget.keyWidth,
               currentOctave: _currentOctave,
               octaveTapped: (int octave) {
@@ -54,21 +57,13 @@ class _PianoViewState extends State<PianoView> {
         ),
         Flexible(
           flex: 8,
-          child: ListView.builder(
-            itemCount: 7,
-            physics:
-                widget.disableScroll ? NeverScrollableScrollPhysics() : null,
+          child: PianoSection(
             controller: _controller,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (BuildContext context, int index) {
-              return PianoOctave(
-                octave: index * 12,
-                keyWidth: widget.keyWidth,
-                showLabels: widget.showLabels,
-                labelsOnlyOctaves: widget.labelsOnlyOctaves,
-                feedback: widget.feedback,
-              );
-            },
+            disableScroll: widget.disableScroll,
+            keyWidth: widget.keyWidth,
+            showLabels: widget.showLabels,
+            labelsOnlyOctaves: widget.labelsOnlyOctaves,
+            feedback: widget.feedback,
           ),
         ),
       ],

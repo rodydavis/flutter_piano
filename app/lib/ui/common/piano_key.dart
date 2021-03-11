@@ -3,6 +3,7 @@ import 'package:tonic/tonic.dart';
 
 import '../../plugins/midi/midi.dart';
 import '../../plugins/vibrate/vibrate.dart';
+import '../theme.dart';
 
 class PianoKey extends StatelessWidget {
   const PianoKey({
@@ -23,9 +24,10 @@ class PianoKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = ThemeUtils(context);
     return InkWell(
       borderRadius: _borderRadius,
-      highlightColor: Colors.grey,
+      // highlightColor: Colors.grey,
       onTap: () {},
       onTapDown: (_) {
         MidiUtils.play(midi);
@@ -43,55 +45,63 @@ class PianoKey extends StatelessWidget {
             children: <Widget>[
               Positioned.fill(
                 child: Semantics(
-                    button: true,
-                    hint: pitchName,
-                    child: Material(
-                      borderRadius: _borderRadius,
-                      color: accidental ? Colors.black : Colors.white,
-                    )),
+                  button: true,
+                  hint: pitchName,
+                  child: Material(
+                    borderRadius: _borderRadius,
+                    color: accidental ? theme.secondColor : theme.firstColor,
+                  ),
+                ),
               ),
               Positioned(
-                  left: 0.0,
-                  right: 0.0,
-                  bottom: 20.0,
-                  child: buildShowLabels(pitchName)
-                      ? Text(pitchName,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color:
-                                  !accidental ? Colors.black : Colors.white))
-                      : Container()),
+                  left: 0,
+                  right: 0,
+                  bottom: 20,
+                  child: IgnorePointer(
+                    child: buildShowLabels(pitchName)
+                        ? Text(
+                            pitchName,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: !accidental
+                                  ? theme.secondColor
+                                  : theme.firstColor,
+                            ),
+                          )
+                        : Container(),
+                  )),
             ],
           );
           if (accidental) {
             return Container(
-                width: keyWidth,
-                margin: EdgeInsets.symmetric(horizontal: 2.0),
-                padding: EdgeInsets.symmetric(horizontal: keyWidth * .1),
-                child: Material(
-                    elevation: 6.0,
-                    borderRadius: _borderRadius,
-                    shadowColor: Color(0x802196F3),
-                    child: pianoKey));
+              width: keyWidth,
+              margin: EdgeInsets.symmetric(horizontal: 2.0),
+              padding: EdgeInsets.symmetric(horizontal: keyWidth * .1),
+              child: Material(
+                elevation: 6.0,
+                borderRadius: _borderRadius,
+                shadowColor: Color(0x802196F3),
+                child: pianoKey,
+              ),
+            );
           }
           return Container(
-              width: keyWidth,
-              child: pianoKey,
-              margin: EdgeInsets.symmetric(horizontal: 2.0));
+            width: keyWidth,
+            child: pianoKey,
+            margin: EdgeInsets.symmetric(horizontal: 2.0),
+          );
         },
       ),
     );
   }
 
   bool buildShowLabels(String pitchName) {
-    if (showLabels) {
-      if (labelsOnlyOctaves) {
-        if (pitchName.replaceAll(RegExp("[0-9]"), "") == "C") return true;
-        return false;
-      }
-      return true;
+    if (!showLabels) return false;
+    if (labelsOnlyOctaves) {
+      if (pitchName.replaceAll(RegExp("[0-9]"), "") == "C") return true;
+      return false;
     }
-    return false;
+    return true;
   }
 }
 

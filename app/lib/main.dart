@@ -40,6 +40,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final i18n = I18n.delegate;
+    final theme = ThemeUtils(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider<SettingsBloc>(create: (_) => _settingsBloc),
@@ -51,33 +52,34 @@ class _MyAppState extends State<MyApp> {
           }
         },
         child: BlocBuilder<SettingsBloc, SettingsState>(
-          builder: (context, settingState) => MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme:
-                settingState is SettingsReady && settingState.settings.darkMode
-                    ? ThemeUtils.dark
-                    : ThemeUtils.light,
-            darkTheme: settingState is SettingsReady &&
-                    settingState.settings.useSystemSetting
-                ? ThemeUtils.dark
-                : null,
-            home: HomeScreen(),
-            onGenerateTitle: (context) => I18n.of(context).title,
-            locale: settingState is SettingsReady
-                ? settingState.settings.locale
-                : Locale("en", "US"),
-            localizationsDelegates: [
-              i18n,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: i18n.supportedLocales,
-            localeResolutionCallback: i18n.resolution(
-              fallback: settingState is SettingsReady
+          builder: (context, settingState) {
+            ThemeMode mode = ThemeMode.system;
+            if (settingState is SettingsReady) {
+              mode = settingState.themeMode;
+            }
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: theme.light,
+              darkTheme: theme.dark,
+              themeMode: mode,
+              home: HomeScreen(),
+              onGenerateTitle: (context) => I18n.of(context).title,
+              locale: settingState is SettingsReady
                   ? settingState.settings.locale
                   : Locale("en", "US"),
-            ),
-          ),
+              localizationsDelegates: [
+                i18n,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: i18n.supportedLocales,
+              localeResolutionCallback: i18n.resolution(
+                fallback: settingState is SettingsReady
+                    ? settingState.settings.locale
+                    : Locale("en", "US"),
+              ),
+            );
+          },
         ),
       ),
     );
