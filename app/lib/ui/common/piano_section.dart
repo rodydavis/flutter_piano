@@ -21,21 +21,23 @@ class PianoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
-      child: ListView.builder(
-        itemCount: 7,
-        physics: disableScroll ? NeverScrollableScrollPhysics() : null,
-        controller: controller,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          return PianoOctave(
-            octave: index * 12,
-            keyWidth: keyWidth,
-            showLabels: showLabels,
-            labelsOnlyOctaves: labelsOnlyOctaves,
-            feedback: feedback,
-          );
-        },
+    return Material(
+      child: Scrollbar(
+        child: ListView.builder(
+          itemCount: 7,
+          physics: disableScroll ? NeverScrollableScrollPhysics() : null,
+          controller: controller,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            return PianoOctave(
+              octave: index * 12,
+              keyWidth: keyWidth,
+              showLabels: showLabels,
+              labelsOnlyOctaves: labelsOnlyOctaves,
+              feedback: feedback,
+            );
+          },
+        ),
       ),
     );
   }
