@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../plugins/midi/midi.dart';
 import '../../plugins/vibrate/vibrate.dart';
@@ -37,9 +36,7 @@ class _PianoSectionState extends State<PianoSection>
 
   void _loadSoundFont() async {
     MidiUtils.unmute();
-    rootBundle.load("assets/sounds/Piano.sf2").then((sf2) {
-      MidiUtils.prepare(sf2, "Piano.sf2");
-    });
+    initMidiUtils();
     if (widget.feedback) {
       VibrateUtils.canVibrate.then((vibrate) {
         if (mounted)
