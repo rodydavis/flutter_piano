@@ -20,35 +20,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  bool canVibrate = false;
+
   @override
-  initState() {
-    _loadSoundFont();
+  void initState() {
+    super.initState();
     Future.delayed(Duration(seconds: 60)).then((_) {
       if (mounted) ReviewUtils.requestReview();
     });
-    super.initState();
   }
-
-  void _loadSoundFont() async {
-    MidiUtils.unmute();
-    rootBundle.load("assets/sounds/Piano.sf2").then((sf2) {
-      MidiUtils.prepare(sf2, "Piano.sf2");
-    });
-    VibrateUtils.canVibrate.then((vibrate) {
-      if (mounted)
-        setState(() {
-          canVibrate = vibrate;
-        });
-    });
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print("State: $state");
-    _loadSoundFont();
-  }
-
-  bool canVibrate = false;
 
   @override
   Widget build(BuildContext context) {
