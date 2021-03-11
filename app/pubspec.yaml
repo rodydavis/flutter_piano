@@ -13,7 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   tonic: ^0.2.3
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.0
   vibrate: ^0.0.4
   flutter_midi: ^1.0.0
   app_review: ^1.0.0
