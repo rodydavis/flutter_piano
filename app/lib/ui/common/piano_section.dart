@@ -60,6 +60,7 @@ class _PianoSectionState extends State<PianoSection>
   Widget build(BuildContext context) {
     final vibrate = canVibrate && widget.feedback;
     return Material(
+      color: Theme.of(context).backgroundColor,
       child: Scrollbar(
         child: ListView.builder(
           itemCount: 7,
