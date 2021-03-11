@@ -5,6 +5,7 @@ import '../../plugins/vibrate/vibrate.dart';
 import 'piano_octave.dart';
 
 const double _kDefaultKeyWidth = 40 + (80 * (0.5));
+const String kDefaultSoundFontPath = 'assets/sounds/Piano.sf2';
 
 class PianoSection extends StatefulWidget {
   const PianoSection({
@@ -15,11 +16,13 @@ class PianoSection extends StatefulWidget {
     this.labelsOnlyOctaves = false,
     this.feedback = false,
     this.keyWidth = _kDefaultKeyWidth,
+    this.soundFontPath = kDefaultSoundFontPath,
   }) : super(key: key);
 
   final ScrollController controller;
   final bool disableScroll, labelsOnlyOctaves, showLabels, feedback;
   final double keyWidth;
+  final String soundFontPath;
 
   @override
   _PianoSectionState createState() => _PianoSectionState();
@@ -36,7 +39,7 @@ class _PianoSectionState extends State<PianoSection>
 
   void _loadSoundFont() async {
     MidiUtils.unmute();
-    initMidiUtils();
+    initMidiUtils(widget.soundFontPath);
     if (widget.feedback) {
       VibrateUtils.canVibrate.then((vibrate) {
         if (mounted)
