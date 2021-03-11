@@ -27,13 +27,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    _settingsBloc.dispatch(CheckSettings());
+    _settingsBloc.add(CheckSettings());
     super.initState();
   }
 
   @override
   void dispose() {
-    _settingsBloc.dispose();
+    _settingsBloc.close();
     super.dispose();
   }
 
@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
     final i18n = I18n.delegate;
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SettingsBloc>(builder: (_) => _settingsBloc),
+        BlocProvider<SettingsBloc>(create: (_) => _settingsBloc),
       ],
       child: BlocListener<SettingsBloc, SettingsState>(
         listener: (context, state) {

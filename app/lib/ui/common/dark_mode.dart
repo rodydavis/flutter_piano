@@ -20,7 +20,7 @@ class DarkModeToggle extends StatelessWidget {
               icon: state.settings.darkMode
                   ? Icon(Icons.brightness_high)
                   : Icon(Icons.brightness_low),
-              onPressed: () => BlocProvider.of<SettingsBloc>(context).dispatch(
+              onPressed: () => BlocProvider.of<SettingsBloc>(context).add(
                   ChangeSettings(
                       state.settings..darkMode = !state.settings.darkMode)),
             );

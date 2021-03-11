@@ -6,8 +6,7 @@ import './bloc.dart';
 import 'settings.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
-  @override
-  SettingsState get initialState => InitialSettingsState();
+  SettingsBloc() : super(InitialSettingsState());
 
   @override
   Stream<SettingsState> mapEventToState(

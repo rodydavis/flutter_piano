@@ -75,14 +75,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   max: 1.0,
                   value: state.settings.widthRatio,
                   onChanged: (double value) =>
-                      BlocProvider.of<SettingsBloc>(context).dispatch(
+                      BlocProvider.of<SettingsBloc>(context).add(
                           ChangeSettings(state.settings..widthRatio = value))),
               ListTile(
                   title: Text("Show Labels"),
                   trailing: Switch(
                       value: state.settings.showLabels,
                       onChanged: (bool value) =>
-                          BlocProvider.of<SettingsBloc>(context).dispatch(
+                          BlocProvider.of<SettingsBloc>(context).add(
                               ChangeSettings(
                                   state.settings..showLabels = value)))),
               Container(
@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         trailing: Switch(
                             value: state.settings.labelsOnlyOctaves,
                             onChanged: (bool value) =>
-                                BlocProvider.of<SettingsBloc>(context).dispatch(
+                                BlocProvider.of<SettingsBloc>(context).add(
                                     ChangeSettings(state.settings
                                       ..labelsOnlyOctaves = value))))
                     : null,
@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   trailing: Switch(
                       value: state.settings.disableScroll,
                       onChanged: (bool value) =>
-                          BlocProvider.of<SettingsBloc>(context).dispatch(
+                          BlocProvider.of<SettingsBloc>(context).add(
                               ChangeSettings(
                                   state.settings..disableScroll = value)))),
               Container(
@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         trailing: Switch(
                           value: state.settings.shouldVibrate,
                           onChanged: (bool value) =>
-                              BlocProvider.of<SettingsBloc>(context).dispatch(
+                              BlocProvider.of<SettingsBloc>(context).add(
                                   ChangeSettings(
                                       state.settings..shouldVibrate = value)),
                         ),
