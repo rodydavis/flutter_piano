@@ -3,6 +3,7 @@ description: A Crossplatform Midi Piano built with Flutter.
 author: Rody Davis Jr <rody.davis.jr@gmail.com>
 homepage: https://github.com/rodydavis/flutter_piano
 version: 1.5.1+400
+publish_to: none
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -12,29 +13,23 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  tonic: ^0.2.3
-  cupertino_icons: ^1.0.0
-  vibrate: ^0.0.4
-  flutter_midi: ^1.0.0
-  app_review: ^1.0.0
-  intl: any
+  flutter_midi:
+    path: ../third_party/flutter_midi/flutter_midi
+  app_review: ^2.0.1
+  url_launcher: ^6.0.2
+  bloc: ^7.0.0
+  flutter_bloc: ^7.0.0
   font_awesome_flutter: ^8.4.0
-  url_launcher: ^5.1.4
-  universal_html: ^1.1.6
-  bloc: ^6.1.0
-  flutter_bloc: ^6.1.0
+  tonic: ^0.2.3
+  vibrate: ^0.0.4
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   flutter_driver:
     sdk: flutter
-  test: ^1.5.1
+  flutter_test:
+    sdk: flutter
   screenshots: ^0.1.7
-
-dependency_overrides:
-  localstorage:
-    git: https://github.com/rodydavis/flutter_localstorage
+  test: ^1.5.1
 
 flutter:
   uses-material-design: true
