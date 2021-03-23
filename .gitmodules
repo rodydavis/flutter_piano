@@ -1,0 +1,3 @@
+[submodule "third_party/flutter_midi"]
+	path = third_party/flutter_midi
+	url = https://github.com/rodydavis/flutter_midi
