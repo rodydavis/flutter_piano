@@ -1,3 +1,6 @@
 [submodule "third_party/flutter_midi"]
 	path = third_party/flutter_midi
 	url = https://github.com/rodydavis/flutter_midi
+[submodule "third_party/dart_melty_soundfont"]
+	path = third_party/dart_melty_soundfont
+	url = https://github.com/rodydavis/dart_melty_soundfont
