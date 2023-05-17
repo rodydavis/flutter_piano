@@ -30,19 +30,17 @@ class _PianoKeyState extends ConsumerState<PianoKey>
 
   late AnimationController _animationController;
   late Animation<double> _animationTween;
+  late Animation<double> _opacityTween;
 
   @override
   void initState() {
     super.initState();
-
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 10),
       vsync: this,
     );
-    _animationTween = Tween(
-      begin: 6.0,
-      end: 3.0,
-    ).animate(_animationController);
+    _animationTween = Tween(begin: 6.0, end: 3.0).animate(_animationController);
+    _opacityTween = Tween(begin: 1.0, end: 0.8).animate(_animationController);
     _animationController.addListener(() {
       setState(() {});
     });
@@ -115,7 +113,7 @@ class _PianoKeyState extends ConsumerState<PianoKey>
         child: Material(
           elevation: _animationTween.value,
           borderRadius: borderRadius,
-          color: bgColor,
+          color: bgColor.withOpacity(_opacityTween.value),
           child: pianoKey,
         ),
       ));
@@ -126,7 +124,7 @@ class _PianoKeyState extends ConsumerState<PianoKey>
         child: Material(
           elevation: _animationTween.value,
           borderRadius: borderRadius,
-          color: bgColor,
+          color: bgColor.withOpacity(_opacityTween.value),
           child: pianoKey,
         ),
       ));

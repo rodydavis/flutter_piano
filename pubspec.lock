@@ -52,11 +52,9 @@ packages:
   dart_melty_soundfont:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "69e0966d71109271830a314f4f021c3cae62ee2e"
-      url: "https://github.com/rodydavis/dart_melty_soundfont"
-    source: git
+      path: "third_party/dart_melty_soundfont"
+      relative: true
+    source: path
     version: "1.2.0"
   fake_async:
     dependency: transitive

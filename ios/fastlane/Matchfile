@@ -1,0 +1,10 @@
+git_url("git@github.com:AppleEducate/signing.git")
+storage_mode("git")
+type("appstore")
+app_identifier("com.appleeducate.pocketpiano")
+username("irody@icloud.com")
+
+# For all available options run `fastlane match --help`
+# Remove the # in the beginning of the line to enable the other options
+
+# The docs are available on https://docs.fastlane.tools/actions/match

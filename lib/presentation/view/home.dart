@@ -1,17 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:dart_melty_soundfont/dart_melty_soundfont.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart';
+import 'package:flutter_piano/data/source/settings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:raw_sound/raw_sound_player.dart';
-import 'package:recase/recase.dart';
 
-import '../../data/source/settings.dart';
-import '../widget/color_picker.dart';
-import '../widget/color_role.dart';
-import '../widget/piano_key.dart';
-import '../widget/piano_section.dart';
-import '../widget/piano_slider.dart';
+import '../../data/source/audio_stream/audio_stream.dart';
+import '../../data/source/midi_player/midi_player.dart';
+import '../widget/piano_view.dart';
+import '../widget/settings.dart';
 
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
@@ -21,302 +17,159 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
-  Synthesizer? synth;
+  // TODO: flutter_midi_command
+  final _focusNode = FocusNode();
+  final audioStream = AudioStream();
+  int octaveOffset = 0;
+  int velocity = 127;
+  int nOctaves = 7;
 
-  static int bufferSize = 4096 << 4;
-  static int nChannels = 1;
-  static int sampleRate = 16000; //44100
-
-  final _players = <int, List<RawSoundPlayer>>{};
-
-  late ScrollController _controller;
+  final midiPlayer = MidiPlayer(AudioStream());
 
   @override
   void initState() {
     super.initState();
-    rootBundle.load('assets/sounds/Piano.sf2').then((bytes) async {
-      final settings = SynthesizerSettings(
-        sampleRate: sampleRate,
-        blockSize: 64,
-        maximumPolyphony: 64,
-        enableReverbAndChorus: false,
-      );
+    midiPlayer.init().then((_) {
       if (mounted) {
-        setState(() {
-          synth = Synthesizer.loadByteData(bytes, settings);
-        });
+        setState(() {});
       }
     });
-    _controller = ScrollController(
-      initialScrollOffset: ref.read(currentOctaveProvider).toDouble(),
-    );
   }
 
-  Future<void> play(int midi) async {
-    synth!.reset();
-    synth!.noteOn(
-      channel: 0,
-      key: midi,
-      velocity: 120,
-    );
-    final current = _players[midi] ??= [];
-    final player = RawSoundPlayer();
-    await player.initialize(
-      bufferSize: bufferSize,
-      nChannels: nChannels,
-      sampleRate: sampleRate,
-      pcmType: RawSoundPCMType.PCMI16,
-    );
-    current.add(player);
-    await player.play();
-    final buffer = synth!.pcm(3);
-    await player.feed(buffer);
-    if (current.length > 1) {
-      current.remove(player);
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> play(int midi) => midiPlayer.play(midi, velocity);
+
+  KeyEventResult onKey(ScaffoldMessengerState messenger, RawKeyEvent event) {
+    KeyEventResult result = KeyEventResult.ignored;
+    if (event is RawKeyDownEvent) {
+      // Use hardware keyboard for midi notes
+      final key = event.logicalKey;
+      final midiNotes = {
+        LogicalKeyboardKey.keyA: 60 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyW: 61 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyS: 62 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyE: 63 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyD: 64 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyF: 65 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyT: 66 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyG: 67 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyY: 68 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyH: 69 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyU: 70 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyJ: 71 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyK: 72 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyO: 73 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyL: 74 + (octaveOffset * 12),
+        LogicalKeyboardKey.keyP: 75 + (octaveOffset * 12),
+        LogicalKeyboardKey.semicolon: 76 + (octaveOffset * 12),
+        LogicalKeyboardKey.quoteSingle: 77 + (octaveOffset * 12),
+      };
+      if (midiNotes.containsKey(key)) {
+        final midi = midiNotes[key]!;
+        play(midi);
+        result = KeyEventResult.handled;
+      }
+      final octaveAdjustment = {
+        LogicalKeyboardKey.keyZ: -1,
+        LogicalKeyboardKey.keyX: 1,
+      };
+      if (octaveAdjustment.containsKey(key)) {
+        final adjustment = octaveAdjustment[key]!;
+        setState(() {
+          octaveOffset = (octaveOffset + adjustment).clamp(
+            -nOctaves + 2,
+            nOctaves - 2,
+          );
+          result = KeyEventResult.handled;
+        });
+      }
+      final velocityAdjustment = {
+        LogicalKeyboardKey.keyC: -1,
+        LogicalKeyboardKey.keyV: 1,
+      };
+      if (velocityAdjustment.containsKey(key)) {
+        final adjustment = velocityAdjustment[key]!;
+        setState(() {
+          velocity = (velocity + adjustment).clamp(0, 127);
+          result = KeyEventResult.handled;
+        });
+      }
     }
+    return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('The Pocket Piano'),
-        actions: [
-          Builder(builder: (context) {
-            return IconButton(
-              onPressed: () {
-                showBottomSheet(
-                  context: context,
-                  builder: (context) =>
-                      StatefulBuilder(builder: (context, setState) {
-                    return ListView(
-                      children: [
-                        ExpansionTile(
-                          title: const Text('Theme Brightness'),
-                          leading: const Icon(Icons.brightness_6),
-                          children: [
-                            Consumer(builder: (context, ref, child) {
-                              final brightness = ref.watch(themeModeProvider);
-                              return ListTile(
-                                title: SegmentedButton(
-                                  segments: [
-                                    for (final item in [
-                                      ThemeMode.light,
-                                      ThemeMode.system,
-                                      ThemeMode.dark,
-                                    ])
-                                      ButtonSegment(
-                                        value: item,
-                                        label: Text(item.label),
-                                        icon: Icon(item.icon),
-                                      ),
-                                  ],
-                                  selected: {brightness},
-                                  onSelectionChanged: (value) {
-                                    ref.read(themeModeProvider.notifier).state =
-                                        value.first;
-                                  },
-                                ),
-                              );
-                            }),
-                          ],
-                        ),
-                        Consumer(builder: (context, ref, child) {
-                          final color = ref.watch(themeColorProvider);
-                          return ColorPicker(
-                            color: color,
-                            onColorChanged: (value) {
-                              ref.read(themeColorProvider.notifier).state =
-                                  value;
-                            },
-                            label: 'Theme Color',
-                          );
-                        }),
-                        Consumer(builder: (context, ref, child) {
-                          final keyWidth = ref.watch(keyWidthProvider);
-                          final invertKeys = ref.watch(invertKeysProvider);
-                          final keyLabel = ref.watch(keyLabelsProvider);
-                          final colorRole = ref.watch(colorRoleProvider);
-                          final haptics = ref.watch(hapticsProvider);
-                          return ExpansionTile(
-                            title: const Text('Key Settings'),
-                            leading: const Icon(Icons.music_note),
-                            children: [
-                              ListTile(
-                                title: const Text('Key Width'),
-                                leading: const Icon(Icons.settings_ethernet),
-                                subtitle: Slider(
-                                  label: keyWidth.toString(),
-                                  value: keyWidth,
-                                  min: 80,
-                                  max: 200,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      ref
-                                          .read(keyWidthProvider.notifier)
-                                          .state = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                              ListTile(
-                                title: const Text('Invert Keys'),
-                                leading: const Icon(Icons.swap_horiz),
-                                trailing: Switch(
-                                  value: invertKeys,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      ref
-                                          .read(invertKeysProvider.notifier)
-                                          .state = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                              ListTile(
-                                title: const Text('Color Role'),
-                                leading: const Icon(Icons.colorize),
-                                trailing: DropdownButton<ColorRole>(
-                                  value: colorRole,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      ref
-                                          .read(colorRoleProvider.notifier)
-                                          .state = value!;
-                                    });
-                                  },
-                                  items: [
-                                    for (final item in ColorRole.values)
-                                      DropdownMenuItem(
-                                        value: item,
-                                        child: Text(item.name.titleCase),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              ListTile(
-                                title: const Text('Key Labels'),
-                                leading: const Icon(Icons.label),
-                                trailing: DropdownButton<PitchLabels>(
-                                  value: keyLabel,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      ref
-                                          .read(keyLabelsProvider.notifier)
-                                          .state = value!;
-                                    });
-                                  },
-                                  items: [
-                                    for (final item in PitchLabels.values)
-                                      DropdownMenuItem(
-                                        value: item,
-                                        child: Text(item.name.titleCase),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              ListTile(
-                                title: const Text('Haptic Feedback'),
-                                leading: const Icon(Icons.vibration),
-                                trailing: Switch(
-                                  value: haptics,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      ref.read(hapticsProvider.notifier).state =
-                                          value;
-                                    });
-                                  },
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 300,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceVariant,
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: IgnorePointer(
-                                    child: PianoSection(
-                                      index: 4,
-                                      onPlay: (midi) {},
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        }),
-                      ],
-                    );
-                  }),
-                );
-              },
-              icon: const Icon(Icons.settings),
+    final splitKeyboard = ref.watch(splitKeyboardProvider);
+    return LayoutBuilder(builder: (context, dimens) {
+      final canSplit = dimens.maxHeight > 600;
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('The Pocket Piano'),
+          actions: [
+            if (canSplit) ...[
+              IconButton(
+                onPressed: () {
+                  ref.read(splitKeyboardProvider.notifier).state =
+                      !splitKeyboard;
+                },
+                icon:
+                    Icon(!splitKeyboard ? Icons.splitscreen : Icons.fullscreen),
+                tooltip: 'Split keyboard',
+              ),
+            ],
+            Builder(builder: (context) {
+              return IconButton(
+                onPressed: () {
+                  showBottomSheet(
+                    context: context,
+                    builder: (context) => const Settings(),
+                  );
+                },
+                icon: const Icon(Icons.settings),
+              );
+            }),
+          ],
+        ),
+        backgroundColor: Theme.of(context).colorScheme.outlineVariant,
+        body: Focus(
+          focusNode: _focusNode,
+          autofocus: true,
+          onKey: (_, event) => onKey(
+            ScaffoldMessenger.of(context),
+            event,
+          ),
+          child: Builder(builder: (context) {
+            if (canSplit && splitKeyboard) {
+              return Column(
+                children: [
+                  Flexible(
+                    child: PianoView(
+                      octaves: nOctaves,
+                      onPlay: play,
+                    ),
+                  ),
+                  Flexible(
+                    child: PianoView(
+                      octaves: nOctaves,
+                      onPlay: play,
+                    ),
+                  ),
+                ],
+              );
+            }
+            return PianoView(
+              octaves: nOctaves,
+              onPlay: play,
             );
           }),
-        ],
-      ),
-      backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-      body: Consumer(builder: (context, ref, child) {
-        final octave = ref.watch(currentOctaveProvider);
-        return Column(
-          children: [
-            Flexible(
-              flex: 1,
-              child: PianoSlider(
-                currentOctave: octave,
-                octaveTapped: (value) {
-                  ref.read(currentOctaveProvider.notifier).state = value;
-                  _controller.animateTo(
-                    value * (ref.read(keyWidthProvider) * 7),
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeInOut,
-                  );
-                },
-              ),
-            ),
-            Flexible(
-              flex: 8,
-              child: ListView.builder(
-                itemCount: 7,
-                controller: _controller,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return PianoSection(
-                    index: index,
-                    onPlay: play,
-                  );
-                },
-              ),
-            ),
-          ],
-        );
-      }),
-    );
-  }
-}
-
-extension on ThemeMode {
-  String get label {
-    switch (this) {
-      case ThemeMode.light:
-        return 'Light';
-      case ThemeMode.dark:
-        return 'Dark';
-      case ThemeMode.system:
-        return 'System';
-    }
-  }
-
-  IconData get icon {
-    switch (this) {
-      case ThemeMode.light:
-        return Icons.wb_sunny;
-      case ThemeMode.dark:
-        return Icons.nights_stay;
-      case ThemeMode.system:
-        return Icons.brightness_auto;
-    }
+        ),
+      );
+    });
   }
 }

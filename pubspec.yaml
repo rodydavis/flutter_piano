@@ -25,8 +25,7 @@ dev_dependencies:
 
 dependency_overrides:
   dart_melty_soundfont:
-    git:
-      url: https://github.com/rodydavis/dart_melty_soundfont
+    path: third_party/dart_melty_soundfont
 
 flutter:
   uses-material-design: true

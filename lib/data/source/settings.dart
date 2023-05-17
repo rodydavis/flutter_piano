@@ -15,6 +15,16 @@ final disableScrollProvider = StateProvider<bool>(
   },
 );
 
+final splitKeyboardProvider = StateProvider<bool>(
+  (ref) {
+    ref.listenSelf((previous, next) async {
+      final prefs = await ref.watch(prefsProvider.future);
+      await prefs.setBool('splitKeyboard', next);
+    });
+    return true;
+  },
+);
+
 final themeColorProvider = StateProvider<Color>((ref) {
   ref.listenSelf((previous, next) async {
     final prefs = await ref.watch(prefsProvider.future);
@@ -71,14 +81,6 @@ final hapticsProvider = StateProvider<bool>((ref) {
   return true;
 });
 
-final currentOctaveProvider = StateProvider<int>((ref) {
-  ref.listenSelf((previous, next) async {
-    final prefs = await ref.watch(prefsProvider.future);
-    await prefs.setInt('currentOctave', next);
-  });
-  return 4;
-});
-
 final prefsProvider = FutureProvider<SharedPreferences>((ref) {
   return SharedPreferences.getInstance();
 });
@@ -119,8 +121,12 @@ final loadSettings = FutureProvider<void>((ref) async {
   if (haptics != null) {
     ref.read(hapticsProvider.notifier).state = haptics;
   }
-  final currentOctave = prefs.getInt('currentOctave');
-  if (currentOctave != null) {
-    ref.read(currentOctaveProvider.notifier).state = currentOctave;
+  final splitKeyboard = prefs.getBool('splitKeyboard');
+  if (splitKeyboard != null) {
+    ref.read(splitKeyboardProvider.notifier).state = splitKeyboard;
+  }
+  final disableScroll = prefs.getBool('disableScroll');
+  if (disableScroll != null) {
+    ref.read(disableScrollProvider.notifier).state = disableScroll;
   }
 });

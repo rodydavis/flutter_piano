@@ -7,12 +7,14 @@ import 'color_role.dart';
 class PianoSlider extends ConsumerWidget {
   const PianoSlider({
     super.key,
-    required this.currentOctave,
-    required this.octaveTapped,
+    required this.viewport,
+    required this.offset,
+    required this.offsetChanged,
   });
 
-  final int currentOctave;
-  final ValueChanged<int> octaveTapped;
+  final double offset;
+  final double viewport;
+  final ValueChanged<double> offsetChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,25 +28,75 @@ class PianoSlider extends ConsumerWidget {
       black = white;
       white = tmp;
     }
-    return Stack(
-      children: <Widget>[
-        Container(
-          color: Theme.of(context).colorScheme.surfaceVariant,
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Row(
-            children: <Widget>[
-              _buildSection(context, 0, black, white),
-              _buildSection(context, 1, black, white),
-              _buildSection(context, 2, black, white),
-              _buildSection(context, 3, black, white),
-              _buildSection(context, 4, black, white),
-              _buildSection(context, 5, black, white),
-              _buildSection(context, 6, black, white),
+    return LayoutBuilder(builder: (context, dimens) {
+      final viewWidth = dimens.maxWidth;
+      final sectionWidth = viewport;
+      final totalWidth = sectionWidth * 7;
+      final relativeOffset = offset / totalWidth * viewWidth;
+      final relativeViewWidth = viewWidth / totalWidth * viewWidth;
+      return Container(
+        color: Theme.of(context).colorScheme.outline,
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: GestureDetector(
+          onHorizontalDragUpdate: (details) {
+            final localX = details.localPosition.dx;
+            final newOffset = localX / viewWidth * totalWidth;
+            offsetChanged(newOffset);
+          },
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Row(
+                  children: <Widget>[
+                    _buildSection(context, 0, black, white),
+                    _buildSection(context, 1, black, white),
+                    _buildSection(context, 2, black, white),
+                    _buildSection(context, 3, black, white),
+                    _buildSection(context, 4, black, white),
+                    _buildSection(context, 5, black, white),
+                    _buildSection(context, 6, black, white),
+                  ],
+                ),
+              ),
+              // Build left scrim
+              Positioned(
+                top: 0,
+                bottom: 0,
+                left: 0,
+                width: relativeOffset,
+                child: Container(
+                  color: Theme.of(context).colorScheme.outline.withOpacity(0.6),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                bottom: 0,
+                left: relativeOffset + relativeViewWidth,
+                right: 0,
+                child: Container(
+                  color: Theme.of(context).colorScheme.outline.withOpacity(0.6),
+                ),
+              ),
+              Positioned(
+                left: relativeOffset,
+                width: relativeViewWidth,
+                top: 0,
+                bottom: 0,
+                child: Container(
+                  foregroundDecoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outline,
+                      width: 2,
+                    ),
+                  ),
+                  child: const SizedBox.expand(),
+                ),
+              ),
             ],
           ),
         ),
-      ],
-    );
+      );
+    });
   }
 
   Widget _buildSection(
@@ -55,7 +107,7 @@ class PianoSlider extends ConsumerWidget {
   ) {
     final _keyWidth = MediaQuery.of(context).size.width / 49;
     return InkWell(
-      onTap: () => octaveTapped(octave),
+      // onTap: () => octaveTapped(octave),
       child: Stack(
         children: <Widget>[
           Row(
@@ -90,16 +142,16 @@ class PianoSlider extends ConsumerWidget {
                   Container(width: _keyWidth * .5),
                 ],
               )),
-          Positioned(
-            left: 0.0,
-            right: 0.0,
-            top: 0.0,
-            bottom: 0.0,
-            child: Container(
-              color:
-                  currentOctave != octave ? Colors.grey.withOpacity(0.7) : null,
-            ),
-          ),
+          // Positioned(
+          //   left: 0.0,
+          //   right: 0.0,
+          //   top: 0.0,
+          //   bottom: 0.0,
+          //   child: Container(
+          //     color:
+          //         currentOctave != octave ? Colors.grey.withOpacity(0.7) : null,
+          //   ),
+          // ),
         ],
       ),
     );

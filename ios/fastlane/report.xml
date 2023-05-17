@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="0: update_fastlane" time="14.018707">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.000154">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: xcode_select" time="0.000158">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: is_ci" time="7.7e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: Switch to ios prepare lane" time="0.000117">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: flutter packages get" time="11.972046">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: flutter clean" time="4.23795">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="7: flutter build ios --release --no-codesign" time="14.895461">
+        
+          <failure message="/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/actions/actions_helper.rb:67:in `execute_action&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/fast_file.rb:222:in `sh&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/fast_file.rb:216:in `sh&apos;&#10;Fastfile:38:in `block (3 levels) in parsing_binding&apos;&#10;Fastfile:35:in `chdir&apos;&#10;Fastfile:35:in `block (2 levels) in parsing_binding&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/lane.rb:33:in `call&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/runner.rb:204:in `try_switch_to_lane&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/runner.rb:146:in `trigger_action_by_name&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/fast_file.rb:159:in `method_missing&apos;&#10;Fastfile:48:in `block (2 levels) in parsing_binding&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/lane.rb:33:in `call&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/runner.rb:49:in `block in execute&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/runner.rb:45:in `chdir&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/runner.rb:45:in `execute&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/lane_manager.rb:47:in `cruise_lane&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/command_line_handler.rb:36:in `handle&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/commands_generator.rb:110:in `block (2 levels) in run&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/commander-4.6.0/lib/commander/command.rb:187:in `call&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/commander-4.6.0/lib/commander/command.rb:157:in `run&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/commander-4.6.0/lib/commander/runner.rb:444:in `run_active_command&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:124:in `run!&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/commander-4.6.0/lib/commander/delegates.rb:18:in `run!&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/commands_generator.rb:354:in `run&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/commands_generator.rb:43:in `start&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/fastlane/lib/fastlane/cli_tools_distributor.rb:123:in `take_off&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/gems/fastlane-2.212.2/bin/fastlane:23:in `&lt;top (required)&gt;&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/bin/fastlane:25:in `load&apos;&#10;/opt/homebrew/Cellar/fastlane/2.212.2/libexec/bin/fastlane:25:in `&lt;main&gt;&apos;&#10;&#10;Exit status of command &apos;flutter build ios --release --no-codesign&apos; was 1 instead of 0.&#10;Resolving dependencies...&#10;  collection 1.17.1 (1.17.2 available)&#10;! dart_melty_soundfont 1.2.0 from path third_party/dart_melty_soundfont (overridden)&#10;  lints 2.0.1 (2.1.0 available)&#10;  matcher 0.12.15 (0.12.16 available)&#10;  material_color_utilities 0.2.0 (0.5.0 available)&#10;  source_span 1.9.1 (1.10.0 available)&#10;  test_api 0.5.1 (0.5.2 available)&#10;  win32 4.1.4 (5.0.1 available)&#10;Got dependencies!&#10;Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.&#10;Building com.appleeducate.pocketpiano for device (ios-release)...&#10;Warning: CocoaPods is installed but broken. Skipping pod install.&#10;  You appear to have CocoaPods installed but it is not working.&#10;  This can happen if the version of Ruby that CocoaPods was installed with is different from the one being used to invoke it.&#10;  This can usually be fixed by re-installing CocoaPods.&#10;To re-install see https://guides.cocoapods.org/using/getting-started.html#installation for instructions.&#10;&#10;CocoaPods not installed or not in valid state.&#10;" />
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>

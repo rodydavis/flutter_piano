@@ -46,7 +46,7 @@ android {
     }
     defaultConfig {
         applicationId "com.appleeducate.flutter_piano"
-        minSdkVersion 16
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

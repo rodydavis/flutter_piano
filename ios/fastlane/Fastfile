@@ -1,0 +1,96 @@
+update_fastlane
+
+default_platform(:ios)
+
+before_all do
+  xcode_select "/Applications/Xcode.app"
+  if is_ci?
+    setup_ci(force: true)
+    STORE_NAME = 'ci_keychain'
+    STORE_PWD = 'FlutterRocks'
+    create_keychain(
+      name: STORE_NAME,
+      password: STORE_PWD,
+      # default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: true
+    )
+    match(
+      type: "appstore",
+      readonly: is_ci,
+      keychain_name: STORE_NAME,
+      keychain_password: STORE_PWD,
+      shallow_clone: true
+    )
+    delete_keychain(
+      name: STORE_NAME
+    )
+  end
+end
+
+platform :ios do
+  desc "Prepare and archive app"
+  lane :prepare  do |options|
+    Dir.chdir "../.." do
+      sh("flutter", "packages", "get")
+      sh("flutter", "clean")
+      sh("flutter", "build", "ios", "--release", "--no-codesign")
+    end
+    build_ios_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner"
+    )
+  end
+  
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    prepare(release: false)
+    pilot(
+      changelog: changelog_from_git_commits,
+      skip_waiting_for_build_processing: true
+    )
+    add_git_tag(
+      grouping: "fastlane-builds",
+      prefix: "v",
+      build_number: get_build_number
+    )
+    push_to_git_remote
+  end
+
+  desc "Push a new beta build to TestFlight"
+  lane :firebase_beta do
+    register_devices(
+      devices_file: "fastlane/devices.txt"
+    )
+    prepare(release: false)
+    firebase_app_distribution(
+      app: "1:284500414675:ios:1135a1c8b4352f51f00426",
+      groups: "testers",
+      release_notes: changelog_from_git_commits
+    )
+    add_git_tag(
+      grouping: "fastlane-builds",
+      prefix: "v",
+      build_number: get_build_number
+    )
+    push_to_git_remote
+  end
+
+  desc "Push a new release build to the App Store"
+  lane :release do
+    prepare(release: true)
+    deliver(
+      submit_for_review: true,
+      automatic_release: true,
+      skip_screenshots: true,
+      force: true
+    )
+    add_git_tag(
+      grouping: "release",
+      prefix: "v",
+      build_number: get_version_number
+    )
+    push_to_git_remote
+  end
+end
