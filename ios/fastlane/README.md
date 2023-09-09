@@ -31,14 +31,6 @@ Prepare and archive app
 
 Push a new beta build to TestFlight
 
-### ios firebase_beta
-
-```sh
-[bundle exec] fastlane ios firebase_beta
-```
-
-Push a new beta build to TestFlight
-
 ### ios release
 
 ```sh

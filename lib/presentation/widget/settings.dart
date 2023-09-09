@@ -1,10 +1,14 @@
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recase/recase.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../data/source/settings.dart';
+import '../view/app.dart';
 import 'color_picker.dart';
 import 'color_role.dart';
+import 'locale.dart';
 import 'piano_key.dart';
 import 'piano_section.dart';
 
@@ -21,7 +25,7 @@ class _SettingsState extends State<Settings> {
     return ListView(
       children: [
         ExpansionTile(
-          title: const Text('Theme Brightness'),
+          title: Text(context.locale.themeBrightness),
           leading: const Icon(Icons.brightness_6),
           children: [
             Consumer(builder: (context, ref, child) {
@@ -36,7 +40,7 @@ class _SettingsState extends State<Settings> {
                     ])
                       ButtonSegment(
                         value: item,
-                        label: Text(item.label),
+                        label: Text(item.label(context)),
                         icon: Icon(item.icon),
                       ),
                   ],
@@ -56,7 +60,7 @@ class _SettingsState extends State<Settings> {
             onColorChanged: (value) {
               ref.read(themeColorProvider.notifier).state = value;
             },
-            label: 'Theme Color',
+            label: context.locale.themeColor,
           );
         }),
         Consumer(builder: (context, ref, child) {
@@ -67,11 +71,11 @@ class _SettingsState extends State<Settings> {
           final haptics = ref.watch(hapticsProvider);
           final disableScroll = ref.watch(disableScrollProvider);
           return ExpansionTile(
-            title: const Text('Key Settings'),
+            title: Text(context.locale.keySettings),
             leading: const Icon(Icons.music_note),
             children: [
               ListTile(
-                title: const Text('Key Width'),
+                title: Text(context.locale.keyWidth),
                 leading: const Icon(Icons.settings_ethernet),
                 subtitle: Slider(
                   label: keyWidth.toString(),
@@ -86,7 +90,7 @@ class _SettingsState extends State<Settings> {
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.restore),
-                  tooltip: 'Reset to default',
+                  tooltip: context.locale.resetToDefault,
                   onPressed: keyWidth == 80
                       ? null
                       : () {
@@ -97,7 +101,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               ListTile(
-                title: const Text('Invert Keys'),
+                title: Text(context.locale.invertKeys),
                 leading: const Icon(Icons.swap_horiz),
                 trailing: Switch(
                   value: invertKeys,
@@ -109,7 +113,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               ListTile(
-                title: const Text('Color Role'),
+                title: Text(context.locale.colorRole),
                 leading: const Icon(Icons.colorize),
                 trailing: DropdownButton<ColorRole>(
                   value: colorRole,
@@ -128,7 +132,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               ListTile(
-                title: const Text('Key Labels'),
+                title: Text(context.locale.keyLabels),
                 leading: const Icon(Icons.label),
                 trailing: DropdownButton<PitchLabels>(
                   value: keyLabel,
@@ -147,7 +151,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               ListTile(
-                title: const Text('Haptic Feedback'),
+                title: Text(context.locale.hapticFeedback),
                 leading: const Icon(Icons.vibration),
                 trailing: Switch(
                   value: haptics,
@@ -159,7 +163,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               ListTile(
-                title: const Text('Disable Scroll'),
+                title: Text(context.locale.disableScroll),
                 leading: const Icon(Icons.list),
                 trailing: Switch(
                   value: disableScroll,
@@ -187,20 +191,53 @@ class _SettingsState extends State<Settings> {
             ],
           );
         }),
+        Consumer(builder: (context, ref, child) {
+          return ExpansionTile(
+            title: Text(context.locale.language),
+            leading: const Icon(Icons.language),
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  children: [
+                    for (final locale in AppLocalizations.supportedLocales)
+                      TextButton.icon(
+                        icon: locale.flag,
+                        label: Text(locale.description(context)),
+                        onPressed: ref.watch(localeProvider)?.languageCode ==
+                                locale.languageCode
+                            ? null
+                            : () => ref.read(localeProvider.notifier).state =
+                                locale,
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              if (ref.watch(localeProvider) != null)
+                OutlinedButton(
+                  child: Text(context.locale.resetToDefault),
+                  onPressed: () =>
+                      ref.read(localeProvider.notifier).state = null,
+                ),
+              const SizedBox(height: 10),
+            ],
+          );
+        }),
       ],
     );
   }
 }
 
 extension on ThemeMode {
-  String get label {
+  String label(BuildContext context) {
     switch (this) {
       case ThemeMode.light:
-        return 'Light';
+        return context.locale.themeBrightnessLight;
       case ThemeMode.dark:
-        return 'Dark';
+        return context.locale.themeBrightnessDark;
       case ThemeMode.system:
-        return 'System';
+        return context.locale.themeBrightnessSystem;
     }
   }
 
@@ -213,5 +250,61 @@ extension on ThemeMode {
       case ThemeMode.system:
         return Icons.brightness_auto;
     }
+  }
+}
+
+extension on Locale {
+  String description(BuildContext context) {
+    switch (languageCode) {
+      case 'en':
+        return context.locale.languageEn;
+      case 'es':
+        return context.locale.languageEs;
+      case 'de':
+        return context.locale.languageDe;
+      case 'fr':
+        return context.locale.languageFr;
+      case 'ja':
+        return context.locale.languageJa;
+      case 'ko':
+        return context.locale.languageKo;
+      case 'zh':
+        return context.locale.languageZh;
+      case 'ru':
+        return context.locale.languageRu;
+      default:
+    }
+    return 'Unknown';
+  }
+
+  CountryFlag get flag {
+    String? code;
+    switch (languageCode) {
+      case 'ja':
+        code = 'jp';
+      case 'en':
+        code = 'us';
+      case 'ko':
+        code = 'kr';
+      case 'zh':
+        code = 'cn';
+      case 'ru':
+        code = 'ru';
+      default:
+    }
+    if (code != null) {
+      return CountryFlag.fromCountryCode(
+        code,
+        height: 24,
+        width: 31,
+        borderRadius: 4,
+      );
+    }
+    return CountryFlag.fromLanguageCode(
+      languageCode.toUpperCase(),
+      height: 24,
+      width: 31,
+      borderRadius: 4,
+    );
   }
 }

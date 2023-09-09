@@ -92,7 +92,7 @@ class _PianoKeyState extends ConsumerState<PianoKey>
           widget.onPlay();
           _animationController.forward();
           if (haptics) {
-            HapticFeedback.heavyImpact();
+            HapticFeedback.mediumImpact();
           }
         },
         onTapUp: (_) {

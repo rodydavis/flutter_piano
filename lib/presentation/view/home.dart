@@ -1,11 +1,12 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:app_review/app_review.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_piano/data/source/settings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/source/audio_stream/audio_stream.dart';
-import '../../data/source/midi_player/midi_player.dart';
+import '../../data/source/player/player.dart';
+import '../../data/source/settings.dart';
+import '../widget/locale.dart';
 import '../widget/piano_view.dart';
 import '../widget/settings.dart';
 
@@ -18,23 +19,12 @@ class Home extends ConsumerStatefulWidget {
 
 class _HomeState extends ConsumerState<Home> {
   // TODO: flutter_midi_command
+  final player = $Player();
   final _focusNode = FocusNode();
-  final audioStream = AudioStream();
   int octaveOffset = 0;
   int velocity = 127;
   int nOctaves = 7;
-
-  final midiPlayer = MidiPlayer(AudioStream());
-
-  @override
-  void initState() {
-    super.initState();
-    midiPlayer.init().then((_) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
+  bool sustain = false;
 
   @override
   void dispose() {
@@ -42,7 +32,27 @@ class _HomeState extends ConsumerState<Home> {
     super.dispose();
   }
 
-  Future<void> play(int midi) => midiPlayer.play(midi, velocity);
+  Future<void> play(int midi) async {
+    await player.play(midi, sustain: sustain);
+  }
+
+  void adjustOctave(int adjustment) {
+    if (mounted) {
+      setState(() {
+        octaveOffset = (octaveOffset + adjustment).clamp(
+          -nOctaves + 2,
+          nOctaves - 2,
+        );
+      });
+    }
+  }
+
+  void setSustain(bool val) async {
+    setState(() {
+      sustain = val;
+    });
+    if (!val) player.stopSustain();
+  }
 
   KeyEventResult onKey(ScaffoldMessengerState messenger, RawKeyEvent event) {
     KeyEventResult result = KeyEventResult.ignored;
@@ -81,10 +91,7 @@ class _HomeState extends ConsumerState<Home> {
       if (octaveAdjustment.containsKey(key)) {
         final adjustment = octaveAdjustment[key]!;
         setState(() {
-          octaveOffset = (octaveOffset + adjustment).clamp(
-            -nOctaves + 2,
-            nOctaves - 2,
-          );
+          adjustOctave(adjustment);
           result = KeyEventResult.handled;
         });
       }
@@ -99,6 +106,10 @@ class _HomeState extends ConsumerState<Home> {
           result = KeyEventResult.handled;
         });
       }
+      if (key == LogicalKeyboardKey.space) {
+        result = KeyEventResult.handled;
+        setSustain(!sustain);
+      }
     }
     return result;
   }
@@ -108,19 +119,59 @@ class _HomeState extends ConsumerState<Home> {
     final splitKeyboard = ref.watch(splitKeyboardProvider);
     return LayoutBuilder(builder: (context, dimens) {
       final canSplit = dimens.maxHeight > 600;
+      final showControls = dimens.maxWidth > 550;
       return Scaffold(
         appBar: AppBar(
-          title: const Text('The Pocket Piano'),
+          title: Text(context.locale.title),
           actions: [
+            if (showControls) ...[
+              IconButton.filled(
+                onPressed: () => adjustOctave(-1),
+                icon: const Icon(Icons.remove),
+                padding: EdgeInsets.zero,
+              ),
+              const SizedBox(width: 4),
+              IconButton.outlined(
+                onPressed: () {
+                  if (mounted) {
+                    setState(() {
+                      octaveOffset = 0;
+                    });
+                  }
+                },
+                icon: Text(
+                  octaveOffset.toString(),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                padding: EdgeInsets.zero,
+              ),
+              const SizedBox(width: 4),
+              IconButton.filled(
+                onPressed: () => adjustOctave(1),
+                icon: const Icon(Icons.add),
+                padding: EdgeInsets.zero,
+              ),
+              const SizedBox(width: 10),
+            ],
+            Text('${context.locale.sustain}:'),
+            Switch(
+              value: sustain,
+              onChanged: setSustain,
+            ),
             if (canSplit) ...[
               IconButton(
-                onPressed: () {
+                onPressed: () async {
+                  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+                    AppReview.requestReview.then((onValue) {
+                      debugPrint('app_review: $onValue');
+                    });
+                  }
                   ref.read(splitKeyboardProvider.notifier).state =
                       !splitKeyboard;
                 },
                 icon:
                     Icon(!splitKeyboard ? Icons.splitscreen : Icons.fullscreen),
-                tooltip: 'Split keyboard',
+                tooltip: context.locale.splitKeyboard,
               ),
             ],
             Builder(builder: (context) {
