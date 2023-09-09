@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
     <base href="$FLUTTER_BASE_HREF" />
 
     <meta charset="UTF-8" />
@@ -53,26 +40,6 @@
             });
           },
         });
-      });
-    </script>
-    <script type="module">
-      import {
-        ElectricPiano,
-        getElectricPianoNames,
-      } from "https://cdn.jsdelivr.net/npm/smplr@0.4.3/+esm";
-      let synth = null;
-
-      async function createSynth() {
-        if (synth !== null) return synth;
-        synth = new ElectricPiano(new AudioContext(), { instrument: "CP80" });
-        await synth.loaded();
-        return synth;
-      }
-
-      document.body.addEventListener("midi", async (e) => {
-        synth = await createSynth();
-        const { note, velocity } = e.detail;
-        synth.start({ note, velocity });
       });
     </script>
   </body>

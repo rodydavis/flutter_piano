@@ -1,160 +1,35 @@
-name: CI
+name: Publish example and package
+
 on:
   push:
     branches:
-      - master
+      - main
+
 jobs:
-  build_web:
-    name: Build Flutter (Web)
+  deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - uses: subosito/flutter-action@v1
-      with:
+      - uses: actions/checkout@v2
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
           channel: 'master'
-    - run: flutter pub get
-    - run: flutter config --enable-web
-    - run: flutter build web
-    - name: Archive Production Artifact
-      uses: actions/upload-artifact@master
-      with:
-        name: web-build
-        path: build/web
-  build_ios:
-    name: Build Flutter (iOS)
-    runs-on: macOS-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-java@v1
-      with:
-        java-version: '12.x'
-    - uses: subosito/flutter-action@v1
-      with:
-          channel: 'dev'
-    - run: flutter pub get
-    - run: flutter clean
-    - run: flutter build ios --release --no-codesign
-    - name: Upload iPA
-      uses: actions/upload-artifact@master
-      with:
-        name: ios-build
-        path: build/ios/iphoneos
-  build_apk:
-    name: Build Flutter (Android)
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-java@v1
-      with:
-        java-version: '12.x'
-    - uses: subosito/flutter-action@v1
-      with:
-          channel: 'dev'
-    - run: flutter pub get
-#     - run: flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
-#     - run: flutter build appbundle --target-platform android-arm,android-arm64
-    - run: flutter build appbundle
-    - name: Upload APK
-      uses: actions/upload-artifact@master
-      with:
-        name: apk-build
-        path: build/app/outputs/apk/release
-  deploy_web:
-    name: Deploy Web to Firebase Hosting
-    needs: build_web
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@master
-      - name: Download Artifact
-        uses: actions/download-artifact@master
+
+      - name: Install
+        run: flutter pub get
+
+      - name: Build Example
+        run: flutter build web && cd ..
+
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1.3
+
+      - name: Build Docs
+        run: dart doc -o build/web/docs
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: web-build
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only hosting --public web-build
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_ID: default
-#   deploy_ios:
-#     name: Deploy iOS Beta
-#     needs: [build_ios]
-#     runs-on: macOS-latest
-#     steps:
-#       - uses: actions/checkout@v1
-#       - uses: subosito/flutter-action@v1
-#         with:
-#           channel: 'dev'
-#       - run:  mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-#       - uses: webfactory/ssh-agent@v0.1.1
-#         with:
-#           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-#       - uses: maierj/fastlane-action@v0.9.5
-#         with:
-#           lane: 'beta'
-#           subdirectory: 'ios'
-#         env:
-#           GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-#   deploy_apk:
-#     name: Deploy Android Beta
-#     needs: [build_apk]
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v1
-#       - uses: actions/setup-java@v1
-#         with:
-#           java-version: '12.x'
-#       - uses: subosito/flutter-action@v1
-#         with:
-#           channel: 'dev'
-#       - uses: maierj/fastlane-action@v0.9.5
-#         with:
-#           lane: 'beta'
-#           subdirectory: 'android'
-#         env:
-#           GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#   beta_ios:
-#     name: Upload iOS Beta to Firebase App Distribution
-#     needs: [build_ios]
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v1
-#     - name: set up JDK 1.8
-#       uses: actions/setup-java@v1
-#       with:
-#         java-version: 1.8
-#     - name: Download Artifact
-#       uses: actions/download-artifact@master
-#       with:
-#         name: ios-build
-#     - name: Upload IPA
-#       uses: wzieba/Firebase-Distribution-Github-Action@v1.0.0
-#       with:
-#         appId: ${{secrets.FIREBASE_IOS_APPID}}
-#         token: ${{secrets.FIREBASE_TOKEN}}
-#         group: testers
-#         file: Runner.ipa
-#   beta_apk:
-#     name: Upload Android Beta to Firebase App Distribution
-#     needs: [build_apk]
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v1
-#     - name: set up JDK 1.8
-#       uses: actions/setup-java@v1
-#       with:
-#         java-version: 1.8
-#     - name: Download Artifact
-#       uses: actions/download-artifact@master
-#       with:
-#         name: apk-build
-#     - name: Upload APK
-#       uses: wzieba/Firebase-Distribution-Github-Action@v1.0.0
-#       with:
-#         appId: ${{secrets.FIREBASE_ANDROID_APPID}}
-#         token: ${{secrets.FIREBASE_TOKEN}}
-#         group: testers
-#         file: app-release.aap
-    
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
