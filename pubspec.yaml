@@ -10,15 +10,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  flutter_localizations:
+    sdk: flutter
   riverpod: ^2.3.6
   flutter_riverpod: ^2.3.6
   recase: ^4.1.0
   shared_preferences: ^2.2.1
   app_review: ^2.1.2+1
   audioplayers: ^5.1.0
-  flutter_localizations:
-    sdk: flutter
   intl: any
   country_flags: ^2.1.1
   flutter_whatsnew: ^1.0.5+2

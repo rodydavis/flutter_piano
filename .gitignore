@@ -77,3 +77,4 @@ report.xml
 ios/Runner.app.dSYM.zip
 macos/flutter_piano.app.dSYM.zip
 *.app
+*.pkg
