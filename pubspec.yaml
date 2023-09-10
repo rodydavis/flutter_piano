@@ -28,6 +28,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   build_version: ^2.1.1
   build_runner: ^2.4.6
+  msix: ^3.16.1
 
 dependency_overrides:
   package_info_plus: ^4.0.0
@@ -39,3 +40,14 @@ flutter:
     - assets/sounds/shot/
     - assets/sounds/sustain/
     - CHANGELOG.md
+
+msix_config:
+  display_name: The Pocket Piano
+  publisher_display_name: Rody Davis
+  logo_path: C:\Users\Surface\Documents\GitHub\flutter_piano\assets\images\icon.png
+  identity_name: 2817RodyDavis.ThePocketPiano
+  publisher: CN=DAC213A7-CAAA-40F4-8B08-78AADBC0B859
+  languages: en, de, es, ru, ja, fr, zh
+  capabilities: ""
+  msix_version: 1.0.1.0
+  store: true
