@@ -72,9 +72,9 @@
 
 android/app/google_play.json
 android/app/google-services.json
-*.p8
 report.xml
-ios/Runner.app.dSYM.zip
-macos/flutter_piano.app.dSYM.zip
+*.p8
+*.dSYM.zip
 *.app
 *.pkg
+*.zip

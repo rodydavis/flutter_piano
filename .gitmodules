@@ -1,3 +1,0 @@
-[submodule "third_party/dart_melty_soundfont"]
-	path = third_party/dart_melty_soundfont
-	url = https://github.com/rodydavis/dart_melty_soundfont
