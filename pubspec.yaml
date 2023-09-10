@@ -2,7 +2,7 @@ name: flutter_piano
 description: A Cross platform Midi Piano built with Flutter.
 maintainer: Rody Davis Jr <rody.davis.jr@gmail.com>
 homepage: https://github.com/rodydavis/flutter_piano
-version: 1.6.0+402
+version: 1.7.0+408
 publish_to: none
 environment:
   sdk: ">=3.0.0-171.0.dev <4.0.0"
@@ -10,26 +10,32 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  flutter_localizations:
+    sdk: flutter
   riverpod: ^2.3.6
   flutter_riverpod: ^2.3.6
-  dart_melty_soundfont: ^1.1.5
-  raw_sound: ^0.3.0+1
   recase: ^4.1.0
-  shared_preferences: ^2.1.1
+  shared_preferences: ^2.2.1
   app_review: ^2.1.2+1
+  audioplayers: ^5.1.0
+  intl: any
+  country_flags: ^2.1.1
+  flutter_whatsnew: ^1.0.5+2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  build_version: ^2.1.1
+  build_runner: ^2.4.6
 
 dependency_overrides:
-  dart_melty_soundfont:
-    path: third_party/dart_melty_soundfont
   package_info_plus: ^4.0.0
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
-    - assets/sounds/Piano.sf2
+    - assets/sounds/shot/
+    - assets/sounds/sustain/
+    - CHANGELOG.md

@@ -105,7 +105,7 @@ class PianoSlider extends ConsumerWidget {
     Color black,
     Color white,
   ) {
-    final _keyWidth = MediaQuery.of(context).size.width / 49;
+    final keyWidth = MediaQuery.of(context).size.width / 49;
     return InkWell(
       // onTap: () => octaveTapped(octave),
       child: Stack(
@@ -132,14 +132,14 @@ class PianoSlider extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Container(width: _keyWidth * .5),
+                  Container(width: keyWidth * .5),
                   _buildKey(context, true, black, white),
                   _buildKey(context, true, black, white),
-                  Container(width: _keyWidth),
+                  Container(width: keyWidth),
                   _buildKey(context, true, black, white),
                   _buildKey(context, true, black, white),
                   _buildKey(context, true, black, white),
-                  Container(width: _keyWidth * .5),
+                  Container(width: keyWidth * .5),
                 ],
               )),
           // Positioned(

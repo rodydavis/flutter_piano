@@ -1,12 +1,16 @@
-import 'dart:async';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app_review/app_review.dart';
+import 'package:flutter_whatsnew/flutter_whatsnew.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/source/settings.dart';
+import '../../src/version.dart';
 import 'home.dart';
+
+final localeProvider = StateProvider<Locale?>(
+  (ref) => null,
+);
 
 class ThePocketPiano extends ConsumerStatefulWidget {
   const ThePocketPiano({super.key});
@@ -16,26 +20,31 @@ class ThePocketPiano extends ConsumerStatefulWidget {
 }
 
 class _ThePocketPianoState extends ConsumerState<ThePocketPiano> {
-  Timer? _timer;
+  static const updateKey = 'app_check';
+  final _navKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
-    ref.read(loadSettings);
-    _timer?.cancel();
-    _timer = Timer(const Duration(seconds: 5), () {
-      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
-        AppReview.requestReview.then((onValue) {
-          debugPrint('app_review: $onValue');
-        });
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkForUpdate(context);
     });
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
+  Future<void> checkForUpdate(BuildContext context) async {
+    final nav = _navKey.currentState!;
+    final prefs = await SharedPreferences.getInstance();
+    final lastCheck = prefs.getString(updateKey);
+    const appVersion = packageVersion;
+    if (lastCheck == null || lastCheck != appVersion) {
+      final _ = await nav.push(
+        MaterialPageRoute(
+          builder: (context) => const WhatsNewPage.changelog(adaptive: false),
+          fullscreenDialog: true,
+        ),
+      );
+      await prefs.setString(updateKey, appVersion);
+    }
   }
 
   @override
@@ -63,7 +72,11 @@ class _ThePocketPianoState extends ConsumerState<ThePocketPiano> {
         ),
         appBarTheme: appBarTheme,
       ),
+      navigatorKey: _navKey,
       themeMode: mode,
+      locale: ref.watch(localeProvider),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const Home(),
     );
   }

@@ -1,3 +1,0 @@
-- Bug fix for slight delay when feedback was enabled on the keys
-- Updating Information and added landing page
-- Updated support url

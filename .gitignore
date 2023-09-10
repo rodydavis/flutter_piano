@@ -72,3 +72,9 @@
 
 android/app/google_play.json
 android/app/google-services.json
+report.xml
+*.p8
+*.dSYM.zip
+*.app
+*.pkg
+*.zip
