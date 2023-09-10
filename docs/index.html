@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 7.0.0-dev">
+  <meta name="description" content="flutter_piano API docs, for the Dart programming language.">
+  <title>flutter_piano - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/rodydavis/flutter_piano">flutter_piano package</a></li>
+  </ol>
+  <div class="self-name">flutter_piano</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        brightness_4
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        brightness_5
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <p><a href="https://codemagic.io/apps/5cd0f574c95918000ce25e99/5cd0f574c95918000ce25e98/latest_build"><img src="https://api.codemagic.io/apps/5cd0f574c95918000ce25e99/5cd0f574c95918000ce25e98/status_badge.svg" alt="Codemagic build status"></a></p>
+<h1 id="flutter_piano">flutter_piano</h1>
+<p>A Crossplatform Midi Piano built with Flutter.dev</p>
+<ul>
+<li>This application runs on both iOS and Android.</li>
+<li>This runs a custom crossplatform midi synth I built for a Flutter plugin <code>flutter_midi</code> that uses .SF2 sound font files.</li>
+</ul>
+<p>The Pocket Piano by Rody Davis
+<a href="https://itunes.apple.com/us/app/the-pocket-piano/id1453992672?mt=8">App Store</a>
+ | <a href="https://play.google.com/store/apps/details?id=com.appleeducate.flutter_piano">Google Play</a></p>
+<pre class="language-dart"><code> assets:
+   - assets/sounds/Piano.SF2
+
+</code></pre>
+<ul>
+<li>There are Semantics included for the visually impaired. All keys show up as buttons and have the pitch name of the midi note not just the number.</li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<p>This application only runs in landscape mode, orientation is set in the AndroidManifest.xml and in the Runner.xcworspace settings.</p>
+<ol>
+<li>Make sure to turn your volume up and unmute the phone (the application will try to unmute the device but it can be overriden).</li>
+<li>Tap on any note to play</li>
+<li>Scroll in either direction to change octaves</li>
+<li>Polyphony is supported with multiple fingers</li>
+</ol>
+<h2 id="configuration">Configuration</h2>
+<ul>
+<li>
+<p>Optionally the key width can be changed in the settings for adjusting key densitity.</p>
+</li>
+<li>
+<p>The key labels can also be turned off if you want a more minimal look.</p>
+</li>
+</ul>
+<h3 id="ios">IOS</h3>
+<p><img src="https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/ios_2.PNG" alt="alt-text-1"></p>
+<h3 id="android">Android</h3>
+<p><img src="https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_1.jpg" alt="alt-text-2"></p>
+<ul>
+<li>You can change the Piano.sf2 file to any sound font file for playing different instruments.</li>
+</ul>
+<h2 id="screenshots">Screenshots</h2>
+<h3 id="ios-2">iOS</h3>
+<p><img src="https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/ios_1.PNG" alt="alt-text-1">
+<img src="https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/ios_3.PNG" alt="alt-text-1"></p>
+<h3 id="android-2">Android</h3>
+<p><img src="https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_3.jpg" alt="alt-text-2">
+<img src="https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_2.jpg" alt="alt-text-2"></p>
+<h2 id="code">Code</h2>
+<pre class="language-dart"><code class="language-dart">import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_midi/flutter_midi.dart';
+import 'package:tonic/tonic.dart';
+
+void main() =&gt; runApp(MyApp());
+
+class MyApp extends StatefulWidget {
+ @override
+ _MyAppState createState() =&gt; _MyAppState();
+}
+
+class _MyAppState extends State&lt;MyApp&gt; {
+ @override
+ initState() {
+   FlutterMidi.unmute();
+   rootBundle.load("assets/sounds/Piano.SF2").then((sf2) {
+     FlutterMidi.prepare(sf2: sf2, name: "Piano.SF2");
+   });
+   super.initState();
+ }
+
+ double get keyWidth =&gt; 80 + (80 * _widthRatio);
+ double _widthRatio = 0.0;
+ bool _showLabels = true;
+
+ @override
+ Widget build(BuildContext context) {
+   return MaterialApp(
+     title: 'The Pocket Piano',
+     theme: ThemeData.dark(),
+     home: Scaffold(
+         drawer: Drawer(
+             child: SafeArea(
+                 child: ListView(children: &lt;Widget&gt;[
+           Container(height: 20.0),
+           ListTile(title: Text("Change Width")),
+           Slider(
+               activeColor: Colors.redAccent,
+               inactiveColor: Colors.white,
+               min: 0.0,
+               max: 1.0,
+               value: _widthRatio,
+               onChanged: (double value) =&gt;
+                   setState(() =&gt; _widthRatio = value)),
+           Divider(),
+           ListTile(
+               title: Text("Show Labels"),
+               trailing: Switch(
+                   value: _showLabels,
+                   onChanged: (bool value) =&gt;
+                       setState(() =&gt; _showLabels = value))),
+           Divider(),
+         ]))),
+         appBar: AppBar(title: Text("The Pocket Piano")),
+         body: ListView.builder(
+           itemCount: 7,
+           controller: ScrollController(initialScrollOffset: 1500.0),
+           scrollDirection: Axis.horizontal,
+           itemBuilder: (BuildContext context, int index) {
+             final int i = index * 12;
+             return SafeArea(
+               child: Stack(children: &lt;Widget&gt;[
+                 Row(mainAxisSize: MainAxisSize.min, children: &lt;Widget&gt;[
+                   _buildKey(24 + i, false),
+                   _buildKey(26 + i, false),
+                   _buildKey(28 + i, false),
+                   _buildKey(29 + i, false),
+                   _buildKey(31 + i, false),
+                   _buildKey(33 + i, false),
+                   _buildKey(35 + i, false),
+                 ]),
+                 Positioned(
+                     left: 0.0,
+                     right: 0.0,
+                     bottom: 100,
+                     top: 0.0,
+                     child: Row(
+                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         mainAxisSize: MainAxisSize.min,
+                         children: &lt;Widget&gt;[
+                           Container(width: keyWidth * .5),
+                           _buildKey(25 + i, true),
+                           _buildKey(27 + i, true),
+                           Container(width: keyWidth),
+                           _buildKey(30 + i, true),
+                           _buildKey(32 + i, true),
+                           _buildKey(34 + i, true),
+                           Container(width: keyWidth * .5),
+                         ])),
+               ]),
+             );
+           },
+         )),
+   );
+ }
+
+ Widget _buildKey(int midi, bool accidental) {
+   final pitchName = Pitch.fromMidiNumber(midi).toString();
+   final pianoKey = Stack(
+     children: &lt;Widget&gt;[
+       Semantics(
+           button: true,
+           hint: pitchName,
+           child: Material(
+               borderRadius: borderRadius,
+               color: accidental ? Colors.black : Colors.white,
+               child: InkWell(
+                 borderRadius: borderRadius,
+                 highlightColor: Colors.grey,
+                 onTap: () {},
+                 onTapDown: (_) =&gt; FlutterMidi.playMidiNote(midi: midi),
+               ))),
+       Positioned(
+           left: 0.0,
+           right: 0.0,
+           bottom: 20.0,
+           child: _showLabels
+               ? Text(pitchName,
+                   textAlign: TextAlign.center,
+                   style: TextStyle(
+                       color: !accidental ? Colors.black : Colors.white))
+               : Container()),
+     ],
+   );
+   if (accidental) {
+     return Container(
+         width: keyWidth,
+         margin: EdgeInsets.symmetric(horizontal: 2.0),
+         padding: EdgeInsets.symmetric(horizontal: keyWidth * .1),
+         child: Material(
+             elevation: 6.0,
+             borderRadius: borderRadius,
+             shadowColor: Color(0x802196F3),
+             child: pianoKey));
+   }
+   return Container(
+       width: keyWidth,
+       child: pianoKey,
+       margin: EdgeInsets.symmetric(horizontal: 2.0));
+ }
+}
+
+const BorderRadiusGeometry borderRadius = BorderRadius.only(
+   bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0));
+
+</code></pre>
+<h3 id="total-dart-code-size-5039-bytes">Total Dart Code Size: 5039 bytes</h3>
+<h2 id="special-thanks">Special Thanks</h2>
+<ul>
+<li>@DFreds</li>
+<li>@jesusrp98</li>
+</ul>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="app">
+  <span class="name"><a href="presentation_view_app/presentation_view_app-library.html">app</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="color_picker">
+  <span class="name"><a href="presentation_widget_color_picker/presentation_widget_color_picker-library.html">color_picker</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="color_role">
+  <span class="name"><a href="presentation_widget_color_role/presentation_widget_color_role-library.html">color_role</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home">
+  <span class="name"><a href="presentation_view_home/presentation_view_home-library.html">home</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="locale">
+  <span class="name"><a href="presentation_widget_locale/presentation_widget_locale-library.html">locale</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="main">
+  <span class="name"><a href="main/main-library.html">main</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="piano_key">
+  <span class="name"><a href="presentation_widget_piano_key/presentation_widget_piano_key-library.html">piano_key</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="piano_section">
+  <span class="name"><a href="presentation_widget_piano_section/presentation_widget_piano_section-library.html">piano_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="piano_slider">
+  <span class="name"><a href="presentation_widget_piano_slider/presentation_widget_piano_slider-library.html">piano_slider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="piano_view">
+  <span class="name"><a href="presentation_widget_piano_view/presentation_widget_piano_view-library.html">piano_view</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="player">
+  <span class="name"><a href="data_source_player_player/data_source_player_player-library.html">player</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="settings">
+  <span class="name"><a href="data_source_settings/data_source_settings-library.html">settings</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="settings">
+  <span class="name"><a href="presentation_widget_settings/presentation_widget_settings-library.html">settings</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="https://github.com/rodydavis/flutter_piano">flutter_piano package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">flutter_piano</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="presentation_view_app/presentation_view_app-library.html">app</a></li>
+      <li><a href="presentation_widget_color_picker/presentation_widget_color_picker-library.html">color_picker</a></li>
+      <li><a href="presentation_widget_color_role/presentation_widget_color_role-library.html">color_role</a></li>
+      <li><a href="presentation_view_home/presentation_view_home-library.html">home</a></li>
+      <li><a href="presentation_widget_locale/presentation_widget_locale-library.html">locale</a></li>
+      <li><a href="main/main-library.html">main</a></li>
+      <li><a href="presentation_widget_piano_key/presentation_widget_piano_key-library.html">piano_key</a></li>
+      <li><a href="presentation_widget_piano_section/presentation_widget_piano_section-library.html">piano_section</a></li>
+      <li><a href="presentation_widget_piano_slider/presentation_widget_piano_slider-library.html">piano_slider</a></li>
+      <li><a href="presentation_widget_piano_view/presentation_widget_piano_view-library.html">piano_view</a></li>
+      <li><a href="data_source_player_player/data_source_player_player-library.html">player</a></li>
+      <li><a href="data_source_settings/data_source_settings-library.html">settings</a></li>
+      <li><a href="presentation_widget_settings/presentation_widget_settings-library.html">settings</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    flutter_piano
+      1.7.0+408
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
