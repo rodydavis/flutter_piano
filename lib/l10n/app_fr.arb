@@ -16,6 +16,8 @@
     "@themeColor": {},
     "keySettings": "Paramètres des touches",
     "@keySettings": {},
+    "settings": "Paramètres",
+    "@settings": {},
     "keyWidth": "Largeur des touches",
     "@keyWidth": {},
     "invertKeys": "Inverser les touches",

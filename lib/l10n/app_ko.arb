@@ -16,6 +16,8 @@
     "@themeColor": {},
     "keySettings": "키 설정",
     "@keySettings": {},
+    "settings": "설정",
+    "@settings": {},
     "keyWidth": "키 너비",
     "@keyWidth": {},
     "invertKeys": "키 반전",

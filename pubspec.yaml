@@ -2,33 +2,38 @@ name: flutter_piano
 description: A Cross platform Midi Piano built with Flutter.
 maintainer: Rody Davis Jr <rody.davis.jr@gmail.com>
 homepage: https://github.com/rodydavis/flutter_piano
-version: 1.7.0+410
+version: 2.0.0+500
 publish_to: none
 environment:
-  sdk: ">=3.0.0-171.0.dev <4.0.0"
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  riverpod: ^2.3.6
-  flutter_riverpod: ^2.3.6
+  flutter_hooks: ^0.21.2
+  get_it: ^8.0.2
+  injectable: ^2.5.0
+  go_router: ^14.7.2
   recase: ^4.1.0
-  shared_preferences: ^2.2.1
-  app_review: ^2.1.2+1
-  audioplayers: ^5.1.0
+  shared_preferences: ^2.3.2
+  app_review: ^3.0.0
+  audioplayers: ^5.2.1
   intl: any
-  country_flags: ^2.1.1
+  country_flags: ^3.0.0
   flutter_whatsnew: ^1.0.5+2
+  shadcn_ui: ^0.53.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
   build_version: ^2.1.1
-  build_runner: ^2.4.6
+  build_runner: ^2.4.9
+  injectable_generator: ^2.6.2
   msix: ^3.16.1
+  mocktail: ^1.0.4
 
 dependency_overrides:
   package_info_plus: ^4.0.0
@@ -40,14 +45,4 @@ flutter:
     - assets/sounds/shot/
     - assets/sounds/sustain/
     - CHANGELOG.md
-
-msix_config:
-  display_name: The Pocket Piano
-  publisher_display_name: Rody Davis
-  logo_path: C:\Users\Surface\Documents\GitHub\flutter_piano\assets\images\icon.png
-  identity_name: 2817RodyDavis.ThePocketPiano
-  publisher: CN=DAC213A7-CAAA-40F4-8B08-78AADBC0B859
-  languages: en, de, es, ru, ja, fr, zh
-  capabilities: ""
-  msix_version: 1.0.1.0
-  store: true
+    - web/icons/Icon-192.png

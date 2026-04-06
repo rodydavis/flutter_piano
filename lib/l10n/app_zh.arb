@@ -16,6 +16,8 @@
     "@themeColor": {},
     "keySettings": "按键设置",
     "@keySettings": {},
+    "settings": "设置",
+    "@settings": {},
     "keyWidth": "按键宽度",
     "@keyWidth": {},
     "invertKeys": "反转按键",

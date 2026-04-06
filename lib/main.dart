@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'src/services/injection.dart';
+import 'ui/screens/app.dart';
 
-import 'presentation/view/app.dart';
-
-void main() {
-  runApp(const ProviderScope(child: ThePocketPiano()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
+  runApp(const ThePocketPiano());
 }
