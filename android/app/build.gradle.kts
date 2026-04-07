@@ -22,7 +22,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.appleeducate.thepitchpipe"
+    namespace = "com.appleeducate.flutter_piano"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
