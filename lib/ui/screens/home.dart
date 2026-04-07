@@ -61,7 +61,8 @@ class Home extends HookWidget {
     return LayoutBuilder(builder: (context, dimens) {
       final canSplit = dimens.maxHeight > 600;
       final showControls = dimens.maxWidth > 550;
-      final isLandscape = dimens.maxWidth > dimens.maxHeight;
+      final isLandscape =
+          dimens.maxWidth > dimens.maxHeight || dimens.minWidth > 500;
 
       return Focus(
         focusNode: focusNode,

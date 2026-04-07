@@ -294,6 +294,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.21.3+1"
+  flutter_hooks_test:
+    dependency: "direct dev"
+    description:
+      name: flutter_hooks_test
+      sha256: f282c45fb00084c60df811a45d453c2e9a54473aba1b88c4d4860a058b89b438
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   flutter_lints:
     dependency: "direct dev"
     description:

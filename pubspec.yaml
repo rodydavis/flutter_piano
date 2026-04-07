@@ -2,7 +2,7 @@ name: flutter_piano
 description: A Cross platform Midi Piano built with Flutter.
 maintainer: Rody Davis Jr <rody.davis.jr@gmail.com>
 homepage: https://github.com/rodydavis/flutter_piano
-version: 2.0.0+500
+version: 2.0.0+501
 publish_to: none
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -41,6 +41,7 @@ dev_dependencies:
   injectable_generator: ^2.6.2
   msix: ^3.16.1
   mocktail: ^1.0.4
+  flutter_hooks_test: ^2.0.0
 
 dependency_overrides:
   package_info_plus: ^4.0.0

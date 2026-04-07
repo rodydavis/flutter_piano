@@ -1,4 +1,5 @@
 import 'package:country_flags/country_flags.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_piano/l10n/app_localizations.dart';
@@ -30,8 +31,6 @@ class SettingsScreen extends HookWidget {
         settings.invertKeys, () => settings.invertKeys.value);
     final keyLabel = useListenableSelector(
         settings.keyLabels, () => settings.keyLabels.value);
-    final colorRole = useListenableSelector(
-        settings.colorRole, () => settings.colorRole.value);
     final haptics =
         useListenableSelector(settings.haptics, () => settings.haptics.value);
     final disableScroll = useListenableSelector(
@@ -82,7 +81,7 @@ class SettingsScreen extends HookWidget {
                 onPressed: () => settings.themeMode.value = ThemeMode.dark,
               ),
               const SizedBox(height: 24),
-                
+
               // Color Section
               _SectionHeader(title: context.locale.themeColor),
               ColorPicker(
@@ -91,7 +90,7 @@ class SettingsScreen extends HookWidget {
                 label: context.locale.themeColor,
               ),
               const SizedBox(height: 24),
-                
+
               // Keyboard Section
               _SectionHeader(title: context.locale.keySettings),
               Text(context.locale.keyWidth, style: shadTheme.textTheme.muted),
@@ -111,28 +110,9 @@ class SettingsScreen extends HookWidget {
                 ),
               ),
               const SizedBox(height: 24),
-                
+
               // Advanced Section
               _SectionHeader(title: "Advanced"),
-              _SettingRow(
-                label: context.locale.colorRole,
-                child: ShadSelect<ColorRole>(
-                  initialValue: colorRole,
-                  onChanged: (value) {
-                    if (value != null) settings.colorRole.value = value;
-                  },
-                  options: [
-                    for (final item in ColorRole.values)
-                      ShadOption(
-                        value: item,
-                        child: Text(item.name.titleCase),
-                      ),
-                  ],
-                  selectedOptionBuilder: (context, value) =>
-                      Text(value.name.titleCase),
-                ),
-              ),
-              const SizedBox(height: 8),
               _SettingRow(
                 label: context.locale.keyLabels,
                 child: ShadSelect<PitchLabels>(
@@ -168,7 +148,7 @@ class SettingsScreen extends HookWidget {
                 ),
               ),
               const SizedBox(height: 24),
-                
+
               // Language Section
               _SectionHeader(title: context.locale.language),
               Wrap(
@@ -200,7 +180,7 @@ class SettingsScreen extends HookWidget {
                 ),
               ],
               const SizedBox(height: 32),
-                
+
               // About Section (Premium Design)
               Container(
                 padding: const EdgeInsets.all(24),
@@ -241,16 +221,18 @@ class SettingsScreen extends HookWidget {
                       '${context.locale.version} $packageVersion',
                       style: shadTheme.textTheme.muted,
                     ),
-                    const SizedBox(height: 24),
-                    ShadButton.secondary(
-                      onPressed: () async {
-                        final url = Uri.parse('https://pocketpiano.app');
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(url);
-                        }
-                      },
-                      child: Text(context.locale.webVersion),
-                    ),
+                    if (!kIsWeb && !kIsWasm) ...[
+                      const SizedBox(height: 24),
+                      ShadButton.secondary(
+                        onPressed: () async {
+                          final url = Uri.parse('https://pocketpiano.app');
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url);
+                          }
+                        },
+                        child: Text(context.locale.webVersion),
+                      ),
+                    ],
                     const SizedBox(height: 12),
                     ShadButton.outline(
                       onPressed: () {

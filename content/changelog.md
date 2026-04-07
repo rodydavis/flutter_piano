@@ -1,8 +1,7 @@
-## 3.0.0
+## 2.0.0
 
-- Add optional local AI features
-- Removed piano roll
-- Remove pitch grid
-- Add speech to pitch
-- Add double tap to switch pitch pipe
-- Add multiple note playing at once
+- Update UI to match related apps
+- Fix piano playback speed
+- Switch to midi engine and support dynamic sustain
+- Add chord detector for keys pressed in landscape
+- Spacebar now can sustain
