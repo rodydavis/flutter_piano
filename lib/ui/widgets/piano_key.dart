@@ -29,26 +29,30 @@ class PianoKey extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labels = useListenableSelector(settings.keyLabels, () => settings.keyLabels.value);
-    final keyWidth = useListenableSelector(settings.keyWidth, () => settings.keyWidth.value);
-    final invertKeys = useListenableSelector(settings.invertKeys, () => settings.invertKeys.value);
-    final haptics = useListenableSelector(settings.haptics, () => settings.haptics.value);
+    final labels = useListenableSelector(
+        settings.keyLabels, () => settings.keyLabels.value);
+    final keyWidth =
+        useListenableSelector(settings.keyWidth, () => settings.keyWidth.value);
+    final invertKeys = useListenableSelector(
+        settings.invertKeys, () => settings.invertKeys.value);
+    final haptics =
+        useListenableSelector(settings.haptics, () => settings.haptics.value);
 
     final isPressed = useState(false);
     final pitchName = midi.pitchName(labels);
-    
+
     final shadTheme = ShadTheme.of(context);
     final shadColors = shadTheme.colorScheme;
-    
+
     Color black = shadColors.foreground;
     Color white = shadColors.background;
-    
+
     if (invertKeys) {
       final tmp = black;
       black = white;
       white = tmp;
     }
-    
+
     final bgColor = accidental ? black : white;
     final fgColor = !accidental ? black : white;
 
@@ -73,7 +77,11 @@ class PianoKey extends HookWidget {
         width: keyWidth,
         margin: const EdgeInsets.symmetric(horizontal: 1.0),
         decoration: BoxDecoration(
-          color: isPressed.value ? bgColor.withValues(alpha: 0.8) : bgColor,
+          color: isPressed.value
+              ? (accidental
+                  ? bgColor.withValues(alpha: 0.8)
+                  : Color.lerp(bgColor, fgColor, 0.1))
+              : bgColor,
           borderRadius: borderRadius,
           border: Border.all(
             color: shadColors.border,
@@ -101,7 +109,7 @@ class PianoKey extends HookWidget {
               bottom: 12.0,
               child: pitchName.isNotEmpty
                   ? Text(
-                      pitchName,
+                      pitchName.split('/').join('\n'),
                       textAlign: TextAlign.center,
                       style: shadTheme.textTheme.small.copyWith(
                         color: fgColor,

@@ -349,6 +349,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// No description provided for @showLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Licenses'**
+  String get showLicenses;
+
+  /// No description provided for @webVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Web Version'**
+  String get webVersion;
 }
 
 class _AppLocalizationsDelegate

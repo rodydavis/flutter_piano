@@ -127,4 +127,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get language => '언어 (Eongeo)';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get showLicenses => 'Show Licenses';
+
+  @override
+  String get webVersion => 'Web Version';
 }

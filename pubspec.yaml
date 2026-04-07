@@ -18,12 +18,19 @@ dependencies:
   go_router: ^14.7.2
   recase: ^4.1.0
   shared_preferences: ^2.3.2
-  app_review: ^3.0.0
-  audioplayers: ^5.2.1
   intl: any
   country_flags: ^3.0.0
-  flutter_whatsnew: ^1.0.5+2
   shadcn_ui: ^0.53.5
+  url_launcher: ^6.3.1
+  dart_melty_soundfont: ^2.0.0
+  flutter_pcm_sound: ^3.3.3
+  web: ^1.1.1
+  shelf_router: ^1.1.4
+  shelf: ^1.4.2
+  path: ^1.9.1
+  markdown: ^7.3.1
+  mustache_template: ^2.0.4
+  shelf_static: ^1.1.3
 
 dev_dependencies:
   flutter_test:
@@ -42,7 +49,6 @@ flutter:
   generate: true
   uses-material-design: true
   assets:
-    - assets/sounds/shot/
-    - assets/sounds/sustain/
+    - assets/sounds/Piano.sf2
     - CHANGELOG.md
     - web/icons/Icon-192.png

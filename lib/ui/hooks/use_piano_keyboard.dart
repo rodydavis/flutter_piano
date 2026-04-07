@@ -80,6 +80,7 @@ PianoKeyHandler usePianoKeyboard({
         if (activeNotes.value.contains(midi)) {
           activeNotes.value.remove(midi);
           onNoteOff?.call(midi);
+          player.stop(midi);
         }
         result = KeyEventResult.handled;
       } else if (key == LogicalKeyboardKey.space) {

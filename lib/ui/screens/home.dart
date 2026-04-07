@@ -1,5 +1,3 @@
-import 'package:app_review/app_review.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +12,6 @@ import '../hooks/use_velocity.dart';
 import '../hooks/use_sustain.dart';
 import '../hooks/use_player.dart';
 import '../hooks/use_piano_keyboard.dart';
-import '../hooks/use_app_version_check.dart';
 import '../hooks/use_chord_recognition.dart';
 
 class Home extends HookWidget {
@@ -35,8 +32,6 @@ class Home extends HookWidget {
     final player = usePlayer(sustain: sustain.value);
     final chord = useChordRecognition();
 
-    useAppVersionCheck(context);
-
     final onKeyEvent = usePianoKeyboard(
       octave: octave,
       velocity: velocity,
@@ -49,13 +44,17 @@ class Home extends HookWidget {
     const nOctaves = 7;
 
     final onPlay = useCallback((int midi) {
+      if (!focusNode.hasFocus) {
+        focusNode.requestFocus();
+      }
       chord.onNoteOn(midi);
       player.play(midi);
-    }, [chord, player]);
+    }, [chord, player, focusNode]);
 
     final onStop = useCallback((int midi) {
       chord.onNoteOff(midi);
-    }, [chord]);
+      player.stop(midi);
+    }, [chord, player]);
 
     final shadTheme = ShadTheme.of(context);
 
@@ -64,81 +63,78 @@ class Home extends HookWidget {
       final showControls = dimens.maxWidth > 550;
       final isLandscape = dimens.maxWidth > dimens.maxHeight;
 
-      return Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: [
-              Text(context.locale.title),
-              if (isLandscape && chord.chord.isNotEmpty) ...[
-                const SizedBox(width: 12),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: shadTheme.colorScheme.accent,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    chord.chord,
-                    style: shadTheme.textTheme.small.copyWith(
-                      color: shadTheme.colorScheme.accentForeground,
-                      fontWeight: FontWeight.bold,
+      return Focus(
+        focusNode: focusNode,
+        autofocus: true,
+        onKeyEvent: onKeyEvent,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                Text(context.locale.title),
+                if (isLandscape && chord.chord.isNotEmpty) ...[
+                  const SizedBox(width: 12),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: shadTheme.colorScheme.accent,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      chord.chord,
+                      style: shadTheme.textTheme.small.copyWith(
+                        color: shadTheme.colorScheme.accentForeground,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
+                ],
+              ],
+            ),
+            actions: [
+              if (showControls) ...[
+                ShadIconButton(
+                  onPressed: () => octave.adjust(-1),
+                  icon: const Icon(LucideIcons.minus),
+                ),
+                const SizedBox(width: 4),
+                ShadIconButton.outline(
+                  onPressed: octave.reset,
+                  icon: Text(
+                    octave.offset.toString(),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                ShadIconButton(
+                  onPressed: () => octave.adjust(1),
+                  icon: const Icon(LucideIcons.plus),
+                ),
+                const SizedBox(width: 10),
+              ],
+              Text('${context.locale.sustain}:'),
+              ShadSwitch(
+                value: sustain.value,
+                onChanged: sustain.setSustain,
+              ),
+              if (canSplit) ...[
+                ShadIconButton.ghost(
+                  onPressed: () async {
+                    settingsService.splitKeyboard.value = !splitKeyboard;
+                  },
+                  icon: Icon(!splitKeyboard
+                      ? LucideIcons.layoutPanelTop
+                      : LucideIcons.maximize),
                 ),
               ],
+              ShadIconButton.ghost(
+                onPressed: () => context.push('/settings'),
+                icon: const Icon(LucideIcons.settings),
+              ),
             ],
           ),
-          actions: [
-            if (showControls) ...[
-              ShadIconButton(
-                onPressed: () => octave.adjust(-1),
-                icon: const Icon(LucideIcons.minus),
-              ),
-              const SizedBox(width: 4),
-              ShadIconButton.outline(
-                onPressed: octave.reset,
-                icon: Text(
-                  octave.offset.toString(),
-                ),
-              ),
-              const SizedBox(width: 4),
-              ShadIconButton(
-                onPressed: () => octave.adjust(1),
-                icon: const Icon(LucideIcons.plus),
-              ),
-              const SizedBox(width: 10),
-            ],
-            Text('${context.locale.sustain}:'),
-            ShadSwitch(
-              value: sustain.value,
-              onChanged: sustain.setSustain,
-            ),
-            if (canSplit) ...[
-              ShadIconButton.ghost(
-                onPressed: () async {
-                  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
-                    AppReview.requestReview();
-                  }
-                  settingsService.splitKeyboard.value = !splitKeyboard;
-                },
-                icon: Icon(!splitKeyboard
-                    ? LucideIcons.layoutPanelTop
-                    : LucideIcons.maximize),
-              ),
-            ],
-            ShadIconButton.ghost(
-              onPressed: () => context.push('/settings'),
-              icon: const Icon(LucideIcons.settings),
-            ),
-          ],
-        ),
-        backgroundColor: ShadTheme.of(context).colorScheme.background,
-        body: Focus(
-          focusNode: focusNode,
-          autofocus: true,
-          onKeyEvent: onKeyEvent,
-          child: Column(
+          backgroundColor: ShadTheme.of(context).colorScheme.background,
+          body: Column(
             children: [
               Expanded(
                 child: Builder(builder: (context) {

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}} - Hymns for Worship</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9fafb;
+      color: #111827;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #0175C2;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    header a {
+      color: white;
+      text-decoration: none;
+    }
+    .content {
+      flex: 1;
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+      line-height: 1.6;
+    }
+    .content h1, .content h2, .content h3 {
+      color: #1f2937;
+    }
+    .content a {
+      color: #0175C2;
+      text-decoration: none;
+    }
+    .content a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      background-color: #111827;
+      color: #d1d5db;
+      padding: 50px 20px 30px;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .footer-links a {
+      color: #9ca3af;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 500;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+    /* Marketing specific styles */
+    .marketing-header {
+      padding: 80px 20px;
+    }
+    .marketing-header h1 {
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+    }
+    .marketing-header p {
+      font-size: 1.25rem;
+      margin-bottom: 40px;
+      opacity: 0.9;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background-color: white;
+      color: #0175C2;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary:hover {
+      background-color: #f3f4f6;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+    .btn-secondary {
+      background-color: transparent;
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+    }
+    .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: white;
+      transform: translateY(-2px);
+    }
+    .marketing-content {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .marketing-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .marketing-content p {
+      font-size: 1.1rem;
+    }
+    
+    /* Markdown specific styles */
+    .markdown-body {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+    .markdown-body pre {
+      background: #f3f4f6;
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .markdown-body code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .markdown-body blockquote {
+      border-left: 4px solid #e5e7eb;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #6b7280;
+    }
+    .markdown-body table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .markdown-body th, .markdown-body td {
+      border: 1px solid #e5e7eb;
+      padding: 8px 12px;
+    }
+    .markdown-body th {
+      background-color: #f9fafb;
+    }
+    .markdown-body img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  {{{content}}}
+
+  <footer>
+    <div class="footer-links">
+      <!-- Link to the markdown pages locally if they exist, else remote -->
+      <a href="/terms-and-conditions">Terms &amp; Conditions</a>
+      <a href="/privacy-policy">Privacy Policy</a>
+      <a href="/changelog">Changelog</a>
+    </div>
+    <p>&copy; {{year}} The Pitch Pipe. All rights reserved.</p>
+  </footer>
+</body>
+</html>

@@ -127,4 +127,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get language => '言語 (Gengo)';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get showLicenses => 'Show Licenses';
+
+  @override
+  String get webVersion => 'Web Version';
 }

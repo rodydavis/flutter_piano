@@ -27,11 +27,39 @@ enum ChordType {
   aug('Augmented'),
   sus2('sus2'),
   sus4('sus4'),
+  maj6('Maj 6'),
+  min6('Min 6'),
   dom7('Dom 7'),
   maj7('Maj 7'),
   min7('Min 7'),
   dim7('Dim 7'),
   halfDim7('Half-Dim 7'),
+  minMaj7('Min-Maj 7'),
+  dom7b5('Dom 7b5'),
+  dom7S5('Dom 7#5'),
+  maj7b5('Maj 7b5'),
+  maj7S5('Maj 7#5'),
+  add9('add9'),
+  minAdd9('Min add9'),
+  add11('add11'),
+  minAdd11('Min add11'),
+  dom9('Dom 9'),
+  maj9('Maj 9'),
+  min9('Min 9'),
+  dom7b9('Dom 7b9'),
+  dom7S9('Dom 7#9'),
+  min9b5('Half-Dim 9'),
+  dom11('Dom 11'),
+  maj11('Maj 11'),
+  min11('Min 11'),
+  dom13('Dom 13'),
+  maj13('Maj 13'),
+  min13('Min 13'),
+  dom7b13('Dom 7b13'),
+  sus4_7('7sus4'),
+  sus4_9('9sus4'),
+  sixNine('6/9'),
+  minSixNine('Min 6/9'),
   power('5');
 
   final String label;
@@ -62,18 +90,80 @@ extension type const ChordPattern(String value) {
 
 /// The definition dictionary for supported chords based on intervals from the root.
 final Map<ChordPattern, ChordType> chordDictionary = {
+  // Triads
   ChordPattern('[0, 4, 7]'): ChordType.major,
   ChordPattern('[0, 3, 7]'): ChordType.minor,
   ChordPattern('[0, 3, 6]'): ChordType.dim,
   ChordPattern('[0, 4, 8]'): ChordType.aug,
   ChordPattern('[0, 2, 7]'): ChordType.sus2,
   ChordPattern('[0, 5, 7]'): ChordType.sus4,
+  ChordPattern('[0, 7]'): ChordType.power,
+
+  // 6th Chords
+  ChordPattern('[0, 4, 7, 9]'): ChordType.maj6,
+  ChordPattern('[0, 3, 7, 9]'): ChordType.min6,
+
+  // 7th Chords
   ChordPattern('[0, 4, 7, 10]'): ChordType.dom7,
   ChordPattern('[0, 4, 7, 11]'): ChordType.maj7,
   ChordPattern('[0, 3, 7, 10]'): ChordType.min7,
   ChordPattern('[0, 3, 6, 9]'): ChordType.dim7,
   ChordPattern('[0, 3, 6, 10]'): ChordType.halfDim7,
-  ChordPattern('[0, 7]'): ChordType.power,
+  ChordPattern('[0, 3, 7, 11]'): ChordType.minMaj7,
+  ChordPattern('[0, 4, 6, 10]'): ChordType.dom7b5,
+  ChordPattern('[0, 4, 8, 10]'): ChordType.dom7S5,
+  ChordPattern('[0, 4, 6, 11]'): ChordType.maj7b5,
+  ChordPattern('[0, 4, 8, 11]'): ChordType.maj7S5,
+
+  // 7th Rootless (No 5th)
+  ChordPattern('[0, 4, 10]'): ChordType.dom7,
+  ChordPattern('[0, 4, 11]'): ChordType.maj7,
+  ChordPattern('[0, 3, 10]'): ChordType.min7,
+
+  // Sus variants
+  ChordPattern('[0, 5, 7, 10]'): ChordType.sus4_7,
+  ChordPattern('[0, 2, 5, 7, 10]'): ChordType.sus4_9,
+
+  // Added Notes
+  ChordPattern('[0, 2, 4, 7]'): ChordType.add9,
+  ChordPattern('[0, 2, 3, 7]'): ChordType.minAdd9,
+  ChordPattern('[0, 4, 5, 7]'): ChordType.add11,
+  ChordPattern('[0, 3, 5, 7]'): ChordType.minAdd11,
+
+  // 9th Chords
+  ChordPattern('[0, 2, 4, 7, 10]'): ChordType.dom9,
+  ChordPattern('[0, 2, 4, 7, 11]'): ChordType.maj9,
+  ChordPattern('[0, 2, 3, 7, 10]'): ChordType.min9,
+  ChordPattern('[0, 1, 4, 7, 10]'): ChordType.dom7b9,
+  ChordPattern('[0, 3, 4, 7, 10]'): ChordType.dom7S9,
+  ChordPattern('[0, 2, 3, 6, 10]'): ChordType.min9b5,
+
+  // 9th Rootless (No 5th)
+  ChordPattern('[0, 2, 4, 10]'): ChordType.dom9,
+  ChordPattern('[0, 2, 4, 11]'): ChordType.maj9,
+  ChordPattern('[0, 2, 3, 10]'): ChordType.min9,
+  ChordPattern('[0, 1, 4, 10]'): ChordType.dom7b9,
+  ChordPattern('[0, 3, 4, 10]'): ChordType.dom7S9,
+
+  // 11th Chords
+  ChordPattern('[0, 2, 4, 5, 7, 10]'): ChordType.dom11,
+  ChordPattern('[0, 2, 4, 5, 7, 11]'): ChordType.maj11,
+  ChordPattern('[0, 2, 3, 5, 7, 10]'): ChordType.min11,
+
+  // 13th Chords
+  ChordPattern('[0, 2, 4, 5, 7, 9, 10]'): ChordType.dom13,
+  ChordPattern('[0, 2, 4, 5, 7, 9, 11]'): ChordType.maj13,
+  ChordPattern('[0, 2, 3, 5, 7, 9, 10]'): ChordType.min13,
+  ChordPattern('[0, 4, 7, 8, 10]'): ChordType.dom7b13,
+
+  // 13th Rootless (root, 3, 7, 13)
+  ChordPattern('[0, 4, 9, 10]'): ChordType.dom13,
+  ChordPattern('[0, 4, 9, 11]'): ChordType.maj13,
+  ChordPattern('[0, 3, 9, 10]'): ChordType.min13,
+
+  // 6/9 Chords
+  ChordPattern('[0, 2, 4, 7, 9]'): ChordType.sixNine,
+  ChordPattern('[0, 2, 3, 7, 9]'): ChordType.minSixNine,
 };
 
 /// Evaluates a list of active MIDI notes and returns the recognized chord string.
@@ -120,5 +210,11 @@ String identifyChord(List<MidiNote> activeNotes) {
   }
 
   // If we have multiple notes but no dictionary match
-  return 'Unknown';
+  final sortedActiveNotes = List<MidiNote>.from(activeNotes)
+    ..sort((a, b) => a.value.compareTo(b.value));
+  final keysPressed = sortedActiveNotes
+      .map((n) => n.pitchClass.note.symbol)
+      .toSet()
+      .join('-');
+  return keysPressed;
 }

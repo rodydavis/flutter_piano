@@ -127,4 +127,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get language => 'Sprache';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get showLicenses => 'Show Licenses';
+
+  @override
+  String get webVersion => 'Web Version';
 }

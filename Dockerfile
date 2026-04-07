@@ -1,36 +1,57 @@
-FROM gitpod/workspace-full:latest
+# syntax=docker/dockerfile:1.4
 
-ENV ANDROID_HOME=/home/gitpod/android-sdk \
-    FLUTTER_HOME=/home/gitpod/flutter
+FROM debian:bookworm-slim AS build
 
-USER root
+# 1. Install dependencies required for Flutter Web
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    curl \
+    unzip \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN curl https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    curl https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list && \
-    apt-get update && \
-    apt-get -y install build-essential dart libkrb5-dev gcc make gradle android-tools-adb android-tools-fastboot openjdk-8-jdk && \
-    apt-get clean && \
-    apt-get -y autoremove && \
-    apt-get -y clean && \
-    rm -rf /var/lib/apt/lists/*;
+# 2. Install Flutter
+ARG FLUTTER_VERSION="3.41.5"
+ENV FLUTTER_HOME=/opt/flutter
+RUN git clone --depth 1 --branch ${FLUTTER_VERSION} https://github.com/flutter/flutter.git ${FLUTTER_HOME}
 
-USER gitpod
+# 3. Set SDK paths
+ENV PATH="${FLUTTER_HOME}/bin:${FLUTTER_HOME}/bin/cache/dart-sdk/bin:${PATH}"
 
-RUN cd /home/gitpod && \
-    wget -qO flutter_sdk.tar.xz \
-    https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_v1.9.1+hotfix.4-stable.tar.xz &&\
-    tar -xvf flutter_sdk.tar.xz && \
-    rm -f flutter_sdk.tar.xz
+WORKDIR /app/core
 
-RUN cd /home/gitpod && \
-    wget -qO android_studio.zip \
-    https://dl.google.com/dl/android/studio/ide-zips/3.3.0.20/android-studio-ide-182.5199772-linux.zip && \
-    unzip android_studio.zip && \
-    rm -f android_studio.zip
+# Copy the app and packages into the build container
+COPY . /app/core
 
-# TODO(tianhaoz95): make the name of the SDK file into an environment variable to avoid maintainance issue
-RUN mkdir -p /home/gitpod/android-sdk && \
-    cd /home/gitpod/android-sdk && \
-    wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip && \
-    unzip sdk-tools-linux-4333796.zip && \
-    rm -f sdk-tools-linux-4333796.zip
+# Assign correct git ownership to avoid security errors
+RUN git config --global --add safe.directory ${FLUTTER_HOME} && \
+    git config --global --add safe.directory /app/core
+
+# 4. Resolve dependencies and build the web app
+RUN flutter pub get
+# RUN dart scripts/env_gen.dart --copy --env=.env.prod
+RUN dart run build_runner build --delete-conflicting-outputs
+# RUN dart run build_pipe:build
+RUN flutter build web --base-href /web/ --wasm
+
+# 5. Compile the app server
+RUN dart build cli -o build/server
+
+# --- Stage 2: Serve the compiled web app ---
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY --from=build /app/core/build/server/bundle /app/server
+COPY --from=build /app/core/build/web /app/build/web
+COPY --from=build /app/core/content /app/content
+COPY --from=build /app/core/templates /app/templates
+
+EXPOSE 80
+
+ENV PORT=80
+
+CMD ["/app/server/bin/server"]

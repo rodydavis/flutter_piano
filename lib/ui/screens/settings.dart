@@ -5,9 +5,11 @@ import 'package:flutter_piano/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:recase/recase.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../src/services/settings.dart';
 import '../../src/models/settings_models.dart';
+import '../../src/version.dart';
 import '../widgets/color_picker.dart';
 import '../widgets/locale.dart';
 
@@ -39,252 +41,290 @@ class SettingsScreen extends HookWidget {
 
     final shadTheme = ShadTheme.of(context);
 
-    Widget buildBentoTile({
-      required String title,
-      required IconData icon,
-      required Widget child,
-      Color? accentColor,
-    }) {
-      return Card(
+    return Scaffold(
+      backgroundColor: shadTheme.colorScheme.background,
+      appBar: AppBar(
+        backgroundColor: shadTheme.colorScheme.background,
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: BorderSide(
-            color: shadTheme.colorScheme.border.withValues(alpha: 0.5),
-          ),
+        leading: ShadButton.ghost(
+          child: const Icon(LucideIcons.arrowLeft),
+          onPressed: () => context.pop(),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+        title: Text(
+          context.locale.settings,
+          style: shadTheme.textTheme.h4,
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
+              // Theme Section
+              _SectionHeader(title: context.locale.themeBrightness),
+              _ThemeItem(
+                label: context.locale.themeBrightnessSystem,
+                icon: LucideIcons.sunMoon,
+                isSelected: themeMode == ThemeMode.system,
+                onPressed: () => settings.themeMode.value = ThemeMode.system,
+              ),
+              _ThemeItem(
+                label: context.locale.themeBrightnessLight,
+                icon: LucideIcons.sun,
+                isSelected: themeMode == ThemeMode.light,
+                onPressed: () => settings.themeMode.value = ThemeMode.light,
+              ),
+              _ThemeItem(
+                label: context.locale.themeBrightnessDark,
+                icon: LucideIcons.moon,
+                isSelected: themeMode == ThemeMode.dark,
+                onPressed: () => settings.themeMode.value = ThemeMode.dark,
+              ),
+              const SizedBox(height: 24),
+                
+              // Color Section
+              _SectionHeader(title: context.locale.themeColor),
+              ColorPicker(
+                color: themeColor,
+                onColorChanged: (value) => settings.themeColor.value = value,
+                label: context.locale.themeColor,
+              ),
+              const SizedBox(height: 24),
+                
+              // Keyboard Section
+              _SectionHeader(title: context.locale.keySettings),
+              Text(context.locale.keyWidth, style: shadTheme.textTheme.muted),
+              const SizedBox(height: 8),
+              ShadSlider(
+                initialValue: keyWidth,
+                min: 50,
+                max: 200,
+                onChanged: (value) => settings.keyWidth.value = value,
+              ),
+              const SizedBox(height: 8),
+              _SettingRow(
+                label: context.locale.invertKeys,
+                child: ShadSwitch(
+                  value: invertKeys,
+                  onChanged: (value) => settings.invertKeys.value = value,
+                ),
+              ),
+              const SizedBox(height: 24),
+                
+              // Advanced Section
+              _SectionHeader(title: "Advanced"),
+              _SettingRow(
+                label: context.locale.colorRole,
+                child: ShadSelect<ColorRole>(
+                  initialValue: colorRole,
+                  onChanged: (value) {
+                    if (value != null) settings.colorRole.value = value;
+                  },
+                  options: [
+                    for (final item in ColorRole.values)
+                      ShadOption(
+                        value: item,
+                        child: Text(item.name.titleCase),
+                      ),
+                  ],
+                  selectedOptionBuilder: (context, value) =>
+                      Text(value.name.titleCase),
+                ),
+              ),
+              const SizedBox(height: 8),
+              _SettingRow(
+                label: context.locale.keyLabels,
+                child: ShadSelect<PitchLabels>(
+                  initialValue: keyLabel,
+                  onChanged: (value) {
+                    if (value != null) settings.keyLabels.value = value;
+                  },
+                  options: [
+                    for (final item in PitchLabels.values)
+                      ShadOption(
+                        value: item,
+                        child: Text(item.name.titleCase),
+                      ),
+                  ],
+                  selectedOptionBuilder: (context, value) =>
+                      Text(value.name.titleCase),
+                ),
+              ),
+              const SizedBox(height: 8),
+              _SettingRow(
+                label: context.locale.hapticFeedback,
+                child: ShadSwitch(
+                  value: haptics,
+                  onChanged: (value) => settings.haptics.value = value,
+                ),
+              ),
+              const SizedBox(height: 8),
+              _SettingRow(
+                label: context.locale.disableScroll,
+                child: ShadSwitch(
+                  value: disableScroll,
+                  onChanged: (value) => settings.disableScroll.value = value,
+                ),
+              ),
+              const SizedBox(height: 24),
+                
+              // Language Section
+              _SectionHeader(title: context.locale.language),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
                 children: [
-                  Icon(icon, size: 18, color: accentColor ?? shadTheme.colorScheme.primary),
-                  const SizedBox(width: 8),
-                  Text(
-                    title,
-                    style: shadTheme.textTheme.large.copyWith(
-                      fontWeight: FontWeight.bold,
+                  for (final locale in AppLocalizations.supportedLocales)
+                    ShadButton.outline(
+                      onPressed:
+                          currentLocale?.languageCode == locale.languageCode
+                              ? null
+                              : () => settings.locale.value = locale,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          locale.flag,
+                          const SizedBox(width: 8),
+                          Text(locale.description(context)),
+                        ],
+                      ),
                     ),
-                  ),
                 ],
               ),
-              const SizedBox(height: 16),
-              child,
-            ],
-          ),
-        ),
-      );
-    }
-
-    final themeSection = buildBentoTile(
-      title: context.locale.themeBrightness,
-      icon: LucideIcons.sun,
-      child: ShadRadioGroup<ThemeMode>(
-        initialValue: themeMode,
-        onChanged: (value) {
-          if (value != null) settings.themeMode.value = value;
-        },
-        items: [
-          for (final item in [
-            ThemeMode.light,
-            ThemeMode.system,
-            ThemeMode.dark,
-          ])
-            ShadRadio(
-              value: item,
-              label: Text(item.label(context)),
-            ),
-        ],
-      ),
-    );
-
-    final colorSection = buildBentoTile(
-      title: context.locale.themeColor,
-      icon: LucideIcons.palette,
-      accentColor: themeColor,
-      child: ColorPicker(
-        color: themeColor,
-        onColorChanged: (value) {
-          settings.themeColor.value = value;
-        },
-        label: context.locale.themeColor,
-      ),
-    );
-
-    final keyboardSection = buildBentoTile(
-      title: context.locale.keySettings,
-      icon: LucideIcons.keyboard,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(context.locale.keyWidth, style: shadTheme.textTheme.muted),
-          ShadSlider(
-            initialValue: keyWidth,
-            min: 50,
-            max: 200,
-            onChanged: (value) {
-              settings.keyWidth.value = value;
-            },
-          ),
-          _SettingRow(
-            label: context.locale.invertKeys,
-            child: ShadSwitch(
-              value: invertKeys,
-              onChanged: (value) => settings.invertKeys.value = value,
-            ),
-          ),
-        ],
-      ),
-    );
-
-    final advancedSection = buildBentoTile(
-      title: "Advanced", // Might need locale key
-      icon: LucideIcons.settings2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _SettingRow(
-            label: context.locale.colorRole,
-            child: ShadSelect<ColorRole>(
-              initialValue: colorRole,
-              onChanged: (value) {
-                if (value != null) settings.colorRole.value = value;
-              },
-              options: [
-                for (final item in ColorRole.values)
-                  ShadOption(
-                    value: item,
-                    child: Text(item.name.titleCase),
-                  ),
-              ],
-              selectedOptionBuilder: (context, value) =>
-                  Text(value.name.titleCase),
-            ),
-          ),
-          _SettingRow(
-            label: context.locale.keyLabels,
-            child: ShadSelect<PitchLabels>(
-              initialValue: keyLabel,
-              onChanged: (value) {
-                if (value != null) settings.keyLabels.value = value;
-              },
-              options: [
-                for (final item in PitchLabels.values)
-                  ShadOption(
-                    value: item,
-                    child: Text(item.name.titleCase),
-                  ),
-              ],
-              selectedOptionBuilder: (context, value) =>
-                  Text(value.name.titleCase),
-            ),
-          ),
-          _SettingRow(
-            label: context.locale.hapticFeedback,
-            child: ShadSwitch(
-              value: haptics,
-              onChanged: (value) => settings.haptics.value = value,
-            ),
-          ),
-          _SettingRow(
-            label: context.locale.disableScroll,
-            child: ShadSwitch(
-              value: disableScroll,
-              onChanged: (value) => settings.disableScroll.value = value,
-            ),
-          ),
-        ],
-      ),
-    );
-
-    final languageSection = buildBentoTile(
-      title: context.locale.language,
-      icon: LucideIcons.languages,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final locale in AppLocalizations.supportedLocales)
-                ShadButton.outline(
-                  onPressed: currentLocale?.languageCode == locale.languageCode
-                      ? null
-                      : () => settings.locale.value = locale,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      locale.flag,
-                      const SizedBox(width: 8),
-                      Text(locale.description(context)),
-                    ],
-                  ),
+              if (currentLocale != null) ...[
+                const SizedBox(height: 12),
+                ShadButton.ghost(
+                  onPressed: () => settings.locale.value = null,
+                  child: Text(context.locale.resetToDefault),
                 ),
+              ],
+              const SizedBox(height: 32),
+                
+              // About Section (Premium Design)
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  color: shadTheme.colorScheme.muted.withValues(alpha: 0.1),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: shadTheme.colorScheme.foreground
+                                .withValues(alpha: 0.1),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: Image.asset(
+                          'web/icons/Icon-192.png',
+                          width: 96,
+                          height: 96,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      context.locale.title,
+                      style: shadTheme.textTheme.h3,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${context.locale.version} $packageVersion',
+                      style: shadTheme.textTheme.muted,
+                    ),
+                    const SizedBox(height: 24),
+                    ShadButton.secondary(
+                      onPressed: () async {
+                        final url = Uri.parse('https://pocketpiano.app');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url);
+                        }
+                      },
+                      child: Text(context.locale.webVersion),
+                    ),
+                    const SizedBox(height: 12),
+                    ShadButton.outline(
+                      onPressed: () {
+                        showLicensePage(
+                          context: context,
+                          applicationName: context.locale.title,
+                          applicationVersion: packageVersion,
+                        );
+                      },
+                      child: Text(context.locale.showLicenses),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
-          if (currentLocale != null) ...[
-            const SizedBox(height: 12),
-            ShadButton.ghost(
-              onPressed: () => settings.locale.value = null,
-              child: Text(context.locale.resetToDefault),
-            ),
-          ],
-        ],
-      ),
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.locale.settings),
-        leading: ShadIconButton.ghost(
-          onPressed: () => context.pop(),
-          icon: const Icon(LucideIcons.chevronLeft),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final isWide = constraints.maxWidth > 800;
-              
-              if (isWide) {
-                return Wrap(
-                  spacing: 16,
-                  runSpacing: 16,
-                  children: [
-                    // Layout: Theme (1/2), Color (1/2), Keyboard (1/3), Advanced (2/3), Language (1/1)
-                    SizedBox(width: (constraints.maxWidth - 16) / 2, child: themeSection),
-                    SizedBox(width: (constraints.maxWidth - 16) / 2, child: colorSection),
-                    SizedBox(width: (constraints.maxWidth - 32) / 3, child: keyboardSection),
-                    SizedBox(width: (constraints.maxWidth * 2 / 3) - 16, child: advancedSection),
-                    SizedBox(width: constraints.maxWidth, child: languageSection),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: [
-                    themeSection,
-                    const SizedBox(height: 16),
-                    colorSection,
-                    const SizedBox(height: 16),
-                    keyboardSection,
-                    const SizedBox(height: 16),
-                    advancedSection,
-                    const SizedBox(height: 16),
-                    languageSection,
-                  ],
-                );
-              }
-            },
-          ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title});
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text(
+        title,
+        style: ShadTheme.of(context)
+            .textTheme
+            .large
+            .copyWith(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class _ThemeItem extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onPressed;
+
+  const _ThemeItem({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: ShadButton.outline(
+        onPressed: onPressed,
+        mainAxisAlignment: MainAxisAlignment.start,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 16),
+                const SizedBox(width: 12),
+                Text(label),
+              ],
+            ),
+            if (isSelected) const Icon(LucideIcons.check, size: 16),
+          ],
         ),
       ),
     );
@@ -308,19 +348,6 @@ class _SettingRow extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-extension on ThemeMode {
-  String label(BuildContext context) {
-    switch (this) {
-      case ThemeMode.light:
-        return context.locale.themeBrightnessLight;
-      case ThemeMode.dark:
-        return context.locale.themeBrightnessDark;
-      case ThemeMode.system:
-        return context.locale.themeBrightnessSystem;
-    }
   }
 }
 

@@ -127,4 +127,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get language => 'Langue';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get showLicenses => 'Show Licenses';
+
+  @override
+  String get webVersion => 'Web Version';
 }

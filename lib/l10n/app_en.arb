@@ -79,5 +79,11 @@
     "languageRu": "Russian",
     "@languageRu": {},
     "language": "Language",
-    "@language": {}
+    "@language": {},
+    "version": "Version",
+    "@version": {},
+    "showLicenses": "Show Licenses",
+    "@showLicenses": {},
+    "webVersion": "Web Version",
+    "@webVersion": {}
 }
