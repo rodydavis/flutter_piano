@@ -30,31 +30,8 @@ This application only runs in landscape mode, orientation is set in the AndroidM
 ## Configuration
 
 * Optionally the key width can be changed in the settings for adjusting key densitity.
-
 * The key labels can also be turned off if you want a more minimal look.
-
-### IOS
-
-![alt-text-1](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/ios_2.PNG)
-
-### Android
-
-![alt-text-2](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_1.jpg)
-
 * You can change the Piano.sf2 file to any sound font file for playing different instruments. 
-
-## Screenshots
-
-### iOS
-
-![alt-text-1](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/ios_1.PNG)
-![alt-text-1](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/ios_3.PNG)
-
-### Android
-
-![alt-text-2](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_3.jpg)
-![alt-text-2](https://github.com/AppleEducate/flutter_piano/blob/master/screenshots/android_2.jpg)
-
 
 ## Code
 
