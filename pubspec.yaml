@@ -20,7 +20,7 @@ dependencies:
   shared_preferences: ^2.3.2
   intl: any
   country_flags: ^3.0.0
-  shadcn_ui: ^0.53.5
+  shadcn_ui: ^0.54.0
   url_launcher: ^6.3.1
   dart_melty_soundfont: ^2.0.0
   flutter_pcm_sound: ^3.3.3
