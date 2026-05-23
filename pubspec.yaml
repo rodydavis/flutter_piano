@@ -14,7 +14,7 @@ dependencies:
     sdk: flutter
   flutter_hooks: ^0.21.2
   get_it: ^8.0.2
-  injectable: ^2.5.0
+  injectable: ^3.0.0
   go_router: ^14.7.2
   recase: ^4.1.0
   shared_preferences: ^2.3.2
@@ -38,7 +38,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   build_version: ^2.1.1
   build_runner: ^2.4.9
-  injectable_generator: ^2.6.2
+  injectable_generator: ^3.0.2
   msix: ^3.16.1
   mocktail: ^1.0.4
   flutter_hooks_test: ^2.0.0
