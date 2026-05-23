@@ -13,7 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_hooks: ^0.21.2
-  get_it: ^8.0.2
+  get_it: ^9.2.1
   injectable: ^2.5.0
   go_router: ^14.7.2
   recase: ^4.1.0
