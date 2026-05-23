@@ -19,7 +19,7 @@ dependencies:
   recase: ^4.1.0
   shared_preferences: ^2.3.2
   intl: any
-  country_flags: ^3.0.0
+  country_flags: ^4.1.2
   shadcn_ui: ^0.53.5
   url_launcher: ^6.3.1
   dart_melty_soundfont: ^2.0.0
