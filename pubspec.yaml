@@ -40,7 +40,7 @@ dev_dependencies:
   build_runner: ^2.4.9
   injectable_generator: ^2.6.2
   msix: ^3.16.1
-  mocktail: ^1.0.4
+  mocktail: ^1.0.5
   flutter_hooks_test: ^2.0.0
 
 dependency_overrides:
