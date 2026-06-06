@@ -15,7 +15,7 @@ dependencies:
   flutter_hooks: ^0.21.2
   get_it: ^8.0.2
   injectable: ^2.5.0
-  go_router: ^14.7.2
+  go_router: ^17.3.0
   recase: ^4.1.0
   shared_preferences: ^2.3.2
   intl: any
