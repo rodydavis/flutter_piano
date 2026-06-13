@@ -22,13 +22,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Set up Bazel (Bazelisk)
-        run: npm install -g @bazel/bazelisk
+      - name: Set up Bazel Environment
+        uses: rodydavis/shared-actions/setup-bazel@main
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -91,5 +86,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Deploy to Coolify
-        run: |
-          curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
+        uses: rodydavis/shared-actions/coolify-deploy@main
+        with:
+          webhook: ${{ secrets.COOLIFY_WEBHOOK }}
+          token: ${{ secrets.COOLIFY_TOKEN }}
