@@ -7,6 +7,10 @@ on:
       - master
   workflow_dispatch: # Allows manual triggering from the Gitea UI
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   renovate:
     runs-on: ubuntu-latest
