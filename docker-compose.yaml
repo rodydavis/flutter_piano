@@ -9,7 +9,7 @@ services:
       - apps-net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pocketpiano.rule=Host(`pocketpiano.app`)"
+      - "traefik.http.routers.pocketpiano.rule=Host(`pocketpiano.app`) || Host(`www.pocketpiano.app`)"
       - "traefik.http.routers.pocketpiano.entrypoints=web"
       - "traefik.http.services.pocketpiano.loadbalancer.server.port=80"
     healthcheck:

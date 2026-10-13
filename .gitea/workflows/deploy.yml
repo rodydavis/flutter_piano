@@ -67,4 +67,3 @@ jobs:
         uses: https://git.rodydavis.dev/rodydavis/shared-actions/truenas-deploy@main
         with:
           ssh_key: ${{ secrets.TRUENAS_SSH_KEY }}
-          app_name: pocket-piano
