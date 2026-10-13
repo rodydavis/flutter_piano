@@ -3,6 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches: ["main", "master"]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,21 +22,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Bazel Environment
-        uses: https://git.rodydavis.dev/rodydavis/shared-actions/setup-bazel@main
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
-          architecture: x64
+          token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Set up Flutter
+        uses: https://git.rodydavis.dev/rodydavis/shared-actions/setup-flutter@main
+        with:
+          version: 4ebf37fe7df0a130ba5bee17315b98f905c10b34
+          git_token: ${{ secrets.GIT_TOKEN }}
 
       - name: Install dependencies
         run: flutter pub upgrade lucide_icons_flutter && flutter pub get
-
-      - name: Verify Hermetic Bazel Build
-        run: bazel build //...
 
       - name: Build Runner
         run: dart run build_runner build --delete-conflicting-outputs
