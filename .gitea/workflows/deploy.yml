@@ -28,12 +28,11 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.2'
           channel: 'stable'
           architecture: x64
 
       - name: Install dependencies
-        run: flutter pub get
+        run: flutter pub upgrade lucide_icons_flutter && flutter pub get
 
       - name: Verify Hermetic Bazel Build
         run: bazel build //...
