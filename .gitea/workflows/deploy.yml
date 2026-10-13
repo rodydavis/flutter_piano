@@ -28,6 +28,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.47.2'
           channel: 'stable'
           architecture: x64
 
@@ -86,19 +87,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Deploy to TrueNAS
-        env:
-          SSH_KEY: ${{ secrets.TRUENAS_SSH_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 10.0.0.218 >> ~/.ssh/known_hosts
-
-          echo "Ensuring application directory on TrueNAS..."
-          ssh -i ~/.ssh/id_ed25519 root@10.0.0.218 "mkdir -p /mnt/jupiter/apps/pocket-piano"
-
-          echo "Syncing docker-compose.yml..."
-          scp -i ~/.ssh/id_ed25519 docker-compose.yaml root@10.0.0.218:/mnt/jupiter/apps/pocket-piano/docker-compose.yml
-
-          echo "Deploying container..."
-          ssh -i ~/.ssh/id_ed25519 root@10.0.0.218 "cd /mnt/jupiter/apps/pocket-piano && docker compose pull && docker compose up -d --remove-orphans" 
+        uses: https://git.rodydavis.dev/rodydavis/shared-actions/truenas-deploy@main
+        with:
+          ssh_key: ${{ secrets.TRUENAS_SSH_KEY }}
+          app_name: pocket-piano
