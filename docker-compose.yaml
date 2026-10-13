@@ -1,11 +1,23 @@
+version: '3.8'
+
 services:
   pocket-piano-web:
     image: git.rodydavis.dev/rodydavis/the-pocket-piano:latest
+    container_name: pocket-piano-web
     restart: unless-stopped
-    expose:
-      - "80"
+    networks:
+      - apps-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pocketpiano.rule=Host(`pocketpiano.app`)"
+      - "traefik.http.routers.pocketpiano.entrypoints=web"
+      - "traefik.http.services.pocketpiano.loadbalancer.server.port=80"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+
+networks:
+  apps-net:
+    external: true
