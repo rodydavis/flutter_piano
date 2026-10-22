@@ -15,10 +15,6 @@ Thumbs.db
 *.swp
 *.swo
 
-# --- Bazel Convenience Symlinks & Outputs ---
-bazel-*
-bazel_out/
-
 # --- C/C++ Outputs ---
 *.o
 *.obj
@@ -34,7 +30,6 @@ bazel_out/
 *.test
 *.prof
 __debug_bin
-MODULE.bazel.lock
 
 # --- Node / JavaScript / pnpm ---
 node_modules/
