@@ -1,0 +1,194 @@
+name: Version & Tagging
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'lib/**'
+      - 'android/**'
+      - 'ios/**'
+      - 'assets/**'
+      - 'web/**'
+      - 'scripts/release.dart'
+      - 'scripts/changelog_parser.dart'
+      - 'scripts/check_code_changes.dart'
+      - 'scripts/update_release_notes.dart'
+      - '.gitea/workflows/version.yml'
+      - '.gitea/workflows/release-mobile.yml'
+  schedule:
+    - cron: '0 2 * * *'   # Daily release (2:00 AM UTC)
+    - cron: '0 3 * * 0'   # Weekly release (Sunday 3:00 AM UTC)
+    - cron: '0 4 1 * *'   # Monthly release (1st of month 4:00 AM UTC)
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Release cadence channel'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - daily
+          - weekly
+          - monthly
+          - manual
+      force:
+        description: 'Force version bump even if no code changes detected'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: version
+  cancel-in-progress: true
+
+jobs:
+  version-and-tag:
+    name: Evaluate Changes, Bump Version & Tag
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(release):')
+    runs-on: macos-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    env:
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Flutter (FVM)
+        uses: https://git.rodydavis.dev/rodydavis/shared-actions/setup-flutter@main
+        with:
+          git_token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Resolve Dependencies
+        run: flutter pub get
+
+      - name: Determine Cadence Channel
+        id: cadence
+        run: |
+          CHANNEL="daily"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            DAY_OF_MONTH=$(date -u +%d)
+            DAY_OF_WEEK=$(date -u +%u) # 1=Mon, 7=Sun
+            if [ "$DAY_OF_MONTH" = "01" ] || [ "$DAY_OF_MONTH" = "1" ]; then
+              CHANNEL="monthly"
+            elif [ "$DAY_OF_WEEK" = "7" ]; then
+              CHANNEL="weekly"
+            else
+              CHANNEL="daily"
+            fi
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            INPUT_CHANNEL="${{ github.event.inputs.channel }}"
+            if [ -n "$INPUT_CHANNEL" ] && [ "$INPUT_CHANNEL" != "auto" ]; then
+              CHANNEL="$INPUT_CHANNEL"
+            fi
+          fi
+          echo "release_channel=$CHANNEL" >> "$GITHUB_OUTPUT"
+          echo "Determined Cadence Channel: $CHANNEL"
+
+      - name: Detect Functional Code Changes
+        id: changes
+        run: |
+          dart scripts/check_code_changes.dart --target app --github-output
+
+      - name: Evaluate Release Gate
+        id: gate
+        run: |
+          EVENT_NAME="${{ github.event_name }}"
+          HAS_CHANGES="${{ steps.changes.outputs.has_code_changes }}"
+          FORCE="${{ github.event.inputs.force }}"
+          if [ "$EVENT_NAME" = "push" ] || [ "$HAS_CHANGES" = "true" ] || [ "$FORCE" = "true" ]; then
+            echo "Proceeding with release version bump (event=$EVENT_NAME, has_changes=$HAS_CHANGES, force=$FORCE)."
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No functional code changes detected on scheduled run and force flag is false. Skipping release tag creation."
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Bump Version
+        if: steps.gate.outputs.should_release == 'true'
+        id: bump
+        run: |
+          CHANNEL="${{ steps.cadence.outputs.release_channel }}"
+          dart scripts/release.dart \
+            --channel "$CHANNEL" \
+            --mode date \
+            --no-commit \
+            --no-tag \
+            --no-push \
+            --github-output
+
+      - name: Commit Version Bump and Push Tag
+        if: steps.gate.outputs.should_release == 'true'
+        run: |
+          TAG_NAME="${{ steps.bump.outputs.tag_name }}"
+          VERSION="${{ steps.bump.outputs.version }}"
+          CHANNEL="${{ steps.cadence.outputs.release_channel }}"
+
+          echo "Configuring git identity..."
+          git config user.name "Gitea Actions"
+          git config user.email "actions@git.rodydavis.dev"
+
+          ACTOR="${{ gitea.actor }}"
+          [ -z "$ACTOR" ] && ACTOR="${{ github.actor }}"
+          [ -z "$ACTOR" ] && ACTOR="rodydavis"
+
+          # Clear extra headers left by checkout action
+          git config --local --unset-all "http.https://git.rodydavis.dev/.extraheader" || true
+          git config --global --unset-all "http.https://git.rodydavis.dev/.extraheader" || true
+
+          # Set authenticated remote URL
+          TOKEN="${{ secrets.GIT_TOKEN }}"
+          [ -z "$TOKEN" ] && TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          REPO_URL="https://${ACTOR}:${TOKEN}@git.rodydavis.dev/${{ github.repository }}.git"
+          git remote set-url origin "$REPO_URL"
+
+          TARGET_BRANCH="${{ github.ref_name }}"
+          if [ "$TARGET_BRANCH" != "main" ] && [ "$TARGET_BRANCH" != "master" ]; then
+            TARGET_BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo "master")
+          fi
+
+          echo "Committing version bump to $TARGET_BRANCH..."
+          git add content/changelog.md \
+                  CHANGELOG.md \
+                  pubspec.yaml \
+                  lib/src/version.dart \
+                  pubspec.lock
+          git commit -m "chore(release): bump version to $TAG_NAME [skip ci]"
+          git pull --rebase --autostash origin "$TARGET_BRANCH"
+          git push --no-recurse-submodules origin "HEAD:$TARGET_BRANCH"
+
+          if [ "$CHANNEL" = "daily" ] || [ "$CHANNEL" = "weekly" ] || [ "$CHANNEL" = "monthly" ]; then
+            echo "Updating moving cadence tag: $CHANNEL..."
+            git tag -f "$CHANNEL"
+            git push --no-recurse-submodules origin "$CHANNEL" --force || true
+          fi
+
+          echo "Creating and pushing release tag: $TAG_NAME..."
+          git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
+          git push --no-recurse-submodules origin "$TAG_NAME"
+
+          echo "Creating Gitea Release with generated release notes for $TAG_NAME..."
+          dart scripts/update_release_notes.dart \
+            --tag "$TAG_NAME" \
+            --channel "$CHANNEL" \
+            --repo "${{ github.repository }}" \
+            --token "$TOKEN" || true
+
+          echo "Triggering Release Mobile workflow for $TAG_NAME..."
+          curl -s -X POST \
+            -H "Authorization: token $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"refs/tags/$TAG_NAME\"}" \
+            "https://git.rodydavis.dev/api/v1/repos/${{ github.repository }}/actions/workflows/release-mobile.yml/dispatches" || true
+
+          echo "Successfully tagged and dispatched release $TAG_NAME on channel $CHANNEL!"

@@ -42,6 +42,12 @@ dev_dependencies:
   msix: ^3.16.1
   mocktail: ^1.0.4
   flutter_hooks_test: ^2.0.0
+  args: ^2.5.0
+  crypto: ^3.0.3
+  http: ^1.2.0
+  test: any
+  googleapis: ^15.0.0
+  googleapis_auth: ^2.0.0
 
 dependency_overrides:
   package_info_plus: ^4.0.0

@@ -14,6 +14,7 @@ env:
 
 jobs:
   build-and-deploy:
+    if: github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
     permissions:
       contents: read

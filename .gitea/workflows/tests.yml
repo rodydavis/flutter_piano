@@ -1,0 +1,67 @@
+name: Tests
+
+on:
+  push:
+    branches: ["main", "master"]
+    paths:
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - 'lib/**'
+      - 'bin/**'
+      - 'scripts/**'
+      - 'test/**'
+      - '.gitea/workflows/tests.yml'
+  pull_request:
+    branches: ["main", "master"]
+    paths:
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - 'lib/**'
+      - 'bin/**'
+      - 'scripts/**'
+      - 'test/**'
+      - '.gitea/workflows/tests.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run Test Suite
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(release):')
+    runs-on: macos-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    env:
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Flutter (FVM)
+        uses: https://git.rodydavis.dev/rodydavis/shared-actions/setup-flutter@main
+        with:
+          git_token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Resolve Dependencies
+        run: flutter pub get
+
+      - name: Build Runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Run Tooling & Change Detection Tests
+        run: |
+          dart test test/check_code_changes_test.dart
+          dart test test/changelog_parser_test.dart
+          dart test test/update_release_notes_test.dart
+
+      - name: Run Flutter Tests
+        run: flutter test

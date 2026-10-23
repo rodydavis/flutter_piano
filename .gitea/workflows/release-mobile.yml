@@ -1,0 +1,189 @@
+name: Release Mobile
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+concurrency:
+  group: release-mobile
+  cancel-in-progress: true
+
+env:
+  REGISTRY: git.rodydavis.dev
+
+jobs:
+  # ==========================================
+  # 0. Test Suite Gate
+  # ==========================================
+  test:
+    name: Run Test Suite
+    runs-on: macos-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    env:
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Flutter (FVM)
+        uses: https://git.rodydavis.dev/rodydavis/shared-actions/setup-flutter@main
+        with:
+          git_token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Resolve Dependencies
+        run: flutter pub get
+
+      - name: Build Runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Run Tests
+        run: |
+          dart test test/check_code_changes_test.dart
+          dart test test/changelog_parser_test.dart
+          dart test test/update_release_notes_test.dart
+          flutter test
+
+  # ==========================================
+  # 1. Android Build & Google Play Pipeline
+  # ==========================================
+  build-android:
+    name: Build Android (Google Play)
+    needs: [test]
+    runs-on: macos-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    env:
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Flutter (FVM)
+        uses: https://git.rodydavis.dev/rodydavis/shared-actions/setup-flutter@main
+        with:
+          git_token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Resolve Dependencies
+        run: flutter pub get
+
+      - name: Build Runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build & Release Android
+        uses: https://git.rodydavis.dev/rodydavis/shared-actions/flutter-build-android@main
+        with:
+          working_directory: .
+          build_aab: 'true'
+          build_apk: 'false'
+          keystore_base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          key_alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          key_password: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          store_password: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          google_play_service_account_json: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          google_play_track: beta
+          google_play_status: completed
+          shorebird_token: ${{ secrets.SHOREBIRD_TOKEN }}
+
+  # ==========================================
+  # 2. iOS Build & TestFlight Pipeline
+  # ==========================================
+  build-ios:
+    name: Build iOS (TestFlight)
+    needs: [test]
+    runs-on: macos-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    env:
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Flutter (FVM)
+        uses: https://git.rodydavis.dev/rodydavis/shared-actions/setup-flutter@main
+        with:
+          git_token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Resolve Dependencies
+        run: flutter pub get
+
+      - name: Build Runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build & Release iOS
+        uses: https://git.rodydavis.dev/rodydavis/shared-actions/flutter-build-ios@main
+        with:
+          working_directory: .
+          certificate_base64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+          certificate_password: ${{ secrets.IOS_CERTIFICATE_PWD }}
+          provisioning_profile_base64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          asc_key_id: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          asc_issuer_id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          asc_private_key: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          apple_id_username: ${{ secrets.AC_USERNAME }}
+          apple_id_password: ${{ secrets.AC_PASSWORD }}
+          shorebird_token: ${{ secrets.SHOREBIRD_TOKEN }}
+
+  # ==========================================
+  # 3. Publish Release Notes & Assets to Gitea
+  # ==========================================
+  publish-release-notes:
+    name: Publish Release Notes to Gitea
+    needs: [build-android, build-ios]
+    if: always() && !cancelled()
+    runs-on: macos-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    env:
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Flutter (FVM)
+        uses: https://git.rodydavis.dev/rodydavis/shared-actions/setup-flutter@main
+        with:
+          git_token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Resolve Dependencies
+        run: flutter pub get
+
+      - name: Run Update Release Notes Script
+        env:
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: |
+          REF_NAME="${{ github.ref_name }}"
+          if [ -z "$REF_NAME" ] || [ "$REF_NAME" = "main" ] || [ "$REF_NAME" = "master" ] || [[ ! "$REF_NAME" =~ ^v ]]; then
+            REF_NAME=$(git describe --tags --match "v*" --abbrev=0 2>/dev/null || grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | sed 's/^/v/')
+          fi
+          echo "Updating release notes for tag: $REF_NAME"
+          dart scripts/update_release_notes.dart \
+            --tag "$REF_NAME" \
+            --token "$GIT_TOKEN"
